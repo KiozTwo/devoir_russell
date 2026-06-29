@@ -2,13 +2,10 @@
 <html lang="fr">
 
 <head>
-
     <meta charset="UTF-8">
-
     <title>Dashboard</title>
 
     <style>
-
         body{
             font-family: Arial, Helvetica, sans-serif;
             margin:40px;
@@ -40,9 +37,7 @@
         a{
             text-decoration:none;
         }
-
     </style>
-
 </head>
 
 <body>
@@ -54,27 +49,15 @@
 <h2>Utilisateur connecté</h2>
 
 <p>
-
-<strong>Nom :</strong>
-
-<%= user.name %>
-
+<strong>Nom :</strong> <%= user.name %>
 </p>
 
 <p>
-
-<strong>Email :</strong>
-
-<%= user.email %>
-
+<strong>Email :</strong> <%= user.email %>
 </p>
 
 <p>
-
-<strong>Date :</strong>
-
-<%= today.toLocaleDateString('fr-FR') %>
-
+<strong>Date :</strong> <%= today.toLocaleDateString('fr-FR') %>
 </p>
 
 <hr>
@@ -82,57 +65,11 @@
 <h2>Navigation</h2>
 
 <ul>
-
-<li>
-
-<a href="/users">
-
-Gestion des utilisateurs
-
-</a>
-
-</li>
-
-<li>
-
-<a href="/catways">
-
-Gestion des Catways
-
-</a>
-
-</li>
-
-<li>
-
-<a href="/reservations">
-
-Gestion des Réservations
-
-</a>
-
-</li>
-
-<li>
-
-<a href="/api-docs">
-
-Documentation API
-
-</a>
-
-</li>
-
-<li>
-
-<a href="/auth/logout">
-
-Déconnexion
-
-</a>
-
-</li>
-
+    <li><a href="/users">Gestion des utilisateurs</a></li>
+    <li><a href="/catways">Gestion des Catways</a></li>
+    <li><a href="/reservations">Gestion des Réservations</a></li>
+    <li><a href="/api-docs">Documentation API</a></li>
+    <li><a href="/auth/logout">Déconnexion</a></li>
 </ul>
 
 <hr>
@@ -142,81 +79,42 @@ Déconnexion
 <table>
 
 <thead>
-
 <tr>
-
-<th>Client</th>
-
-<th>Bateau</th>
-
-<th>Catway</th>
-
-<th>Date début</th>
-
-<th>Date fin</th>
-
+    <th>Client</th>
+    <th>Bateau</th>
+    <th>Catway</th>
+    <th>Date début</th>
+    <th>Date fin</th>
 </tr>
-
 </thead>
 
 <tbody>
 
-<% if(reservations.length === 0){ %>
+<% if (!reservations || reservations.length === 0) { %>
 
 <tr>
-
-<td colspan="5">
-
-Aucune réservation enregistrée.
-
-</td>
-
+    <td colspan="5">Aucune réservation enregistrée.</td>
 </tr>
 
-<% } %>
+<% } else { %>
 
-<% reservations.forEach(reservation => { %>
+<% (reservations || []).forEach(reservation => { %>
 
 <tr>
-
-<td>
-
-<%= reservation.clientName %>
-
-</td>
-
-<td>
-
-<%= reservation.boatName %>
-
-</td>
-
-<td>
-
-<%= reservation.catway ? reservation.catway.catwayNumber : "Catway supprimé" %>
-
-</td>
-
-<td>
-
-<%= new Date(reservation.startDate).toLocaleDateString('fr-FR') %>
-
-</td>
-
-<td>
-
-<%= new Date(reservation.endDate).toLocaleDateString('fr-FR') %>
-
-</td>
-
+    <td><%= reservation.clientName %></td>
+    <td><%= reservation.boatName %></td>
+    <td><%= reservation.catway ? reservation.catway.catwayNumber : "Catway supprimé" %></td>
+    <td><%= new Date(reservation.startDate).toLocaleDateString('fr-FR') %></td>
+    <td><%= new Date(reservation.endDate).toLocaleDateString('fr-FR') %></td>
 </tr>
 
 <% }) %>
+
+<% } %>
 
 </tbody>
 
 </table>
 
 </body>
-
 </html>
