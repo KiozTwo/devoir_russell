@@ -86,4 +86,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/test', (req, res) => {
     res.send("OK SERVER WORKING");
 });
+app.get('/debug-dashboard', (req, res) => {
+    res.send("dashboard route OK");
+});
 module.exports = app;
