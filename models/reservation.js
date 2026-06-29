@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
+
 const ReservationSchema = new mongoose.Schema({
-    catway: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Catway',
+    catwayNumber: {
+        type: Number,
         required: true
     },
     clientName: {
@@ -22,4 +22,5 @@ const ReservationSchema = new mongoose.Schema({
         required: true
     }
 });
+
 module.exports = mongoose.model('Reservation', ReservationSchema);

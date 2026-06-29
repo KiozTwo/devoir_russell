@@ -1,20 +1,38 @@
-const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerJSDoc = require('swagger-jsdoc');
 
 const options = {
     definition: {
-        openapi: '3.0.0',
+        openapi: "3.0.0",
         info: {
-            title: 'API Russell',
-            version: '1.0.0',
-            description: 'Documentation de l\'API de gestion des catways'
+            title: "API Russell Marina",
+            version: "1.0.0",
+            description: "API gestion catways, réservations et utilisateurs"
         },
         servers: [
             {
-                url: 'http://localhost:3000'
+                url: "http://localhost:3000",
+                description: "Serveur local"
+            }
+        ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT"
+                }
+            }
+        },
+        security: [
+            {
+                bearerAuth: []
             }
         ]
     },
-    apis: ['./routes/*.js']
+
+    apis: [
+        "./routes/api/*.js"
+    ]
 };
 
-module.exports = swaggerJsdoc(options);
+module.exports = swaggerJSDoc(options);
