@@ -11,15 +11,20 @@ const userRoutes = require('./routes/users');
 const catwaysRoutes = require('./routes/catways');
 const reservationRoutes = require('./routes/reservations');
 
+const Reservation = require('./models/reservation');
 const auth = require('./middleware/auth');
 
 const app = express();
 
+// ======================
 // VIEW ENGINE
+// ======================
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// ======================
 // MIDDLEWARES
+// ======================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
@@ -32,25 +37,50 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// AUTH
+// ======================
+// AUTH ROUTES
+// ======================
 app.use('/auth', authRoutes);
 
+// ======================
 // HOME
+// ======================
 app.get('/', (req, res) => {
     res.render('login');
 });
 
-// DASHBOARD
-app.get('/dashboard', auth, (req, res) => {
-    res.render('dashboard', { user: req.user, today: new Date() });
+// ======================
+// DASHBOARD (FIX IMPORTANT)
+// ======================
+app.get('/dashboard', auth, async (req, res) => {
+    try {
+        const reservations = await Reservation.find().populate('catway');
+
+        res.render('dashboard', {
+            user: req.user,
+            reservations: reservations || [],
+            today: new Date()
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Erreur serveur");
+    }
 });
 
-// FRONT ROUTES
+// ======================
+// FRONT ROUTES (CRUD VIEWS)
+// ======================
 app.use('/catways', auth, catwaysRoutes);
 app.use('/users', auth, userRoutes);
 app.use('/reservations', auth, reservationRoutes);
 
+// ======================
 // SWAGGER
+// ======================
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// ======================
+// EXPORT
+// ======================
 module.exports = app;

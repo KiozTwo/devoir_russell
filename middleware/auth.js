@@ -1,11 +1,6 @@
-module.exports = (req, res, next) => {
+UserSchema.pre('save', async function () {
+    if (!this.isModified('password')) return;
 
-    if (!req.session.user) {
-        return res.redirect('/auth/login');
-    }
-
-    req.user = req.session.user;
-
-    next();
-
-};
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+});
