@@ -22,4 +22,4 @@ const ReservationSchema = new mongoose.Schema({
         required: true
     }
 });
-module.exports = mongoose.model('Reservation',ReservationSchema);
+module.exports = mongoose.model('Reservation', ReservationSchema);

@@ -16,11 +16,22 @@ const auth = require('./middleware/auth');
 
 const app = express();
 
+
+// ======================
+// DEBUG MIDDLEWARE (TOUJOURS EN PREMIER)
+// ======================
+app.use((req, res, next) => {
+    console.log("➡️ REQUEST:", req.method, req.url);
+    next();
+});
+
+
 // ======================
 // VIEW ENGINE
 // ======================
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
 
 // ======================
 // MIDDLEWARES
@@ -37,10 +48,12 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // ======================
 // AUTH ROUTES
 // ======================
 app.use('/auth', authRoutes);
+
 
 // ======================
 // HOME
@@ -49,8 +62,9 @@ app.get('/', (req, res) => {
     res.render('login');
 });
 
+
 // ======================
-// DASHBOARD (FIX IMPORTANT)
+// DASHBOARD
 // ======================
 app.get('/dashboard', auth, async (req, res) => {
     try {
@@ -63,30 +77,39 @@ app.get('/dashboard', auth, async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("DASHBOARD ERROR:", error);
         res.status(500).send("Erreur serveur");
     }
 });
 
+
 // ======================
-// FRONT ROUTES (CRUD VIEWS)
+// FRONT ROUTES
 // ======================
 app.use('/catways', auth, catwaysRoutes);
 app.use('/users', auth, userRoutes);
 app.use('/reservations', auth, reservationRoutes);
+
 
 // ======================
 // SWAGGER
 // ======================
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+
 // ======================
-// EXPORT
+// TEST ROUTE
 // ======================
 app.get('/test', (req, res) => {
     res.send("OK SERVER WORKING");
 });
+
 app.get('/debug-dashboard', (req, res) => {
     res.send("dashboard route OK");
 });
+
+
+// ======================
+// EXPORT
+// ======================
 module.exports = app;

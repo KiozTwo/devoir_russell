@@ -1,100 +1,24 @@
 const express = require('express');
 const router = express.Router();
 
-const reservationsController = require('../controllers/reservationsController');
+const apiController = require('../controllers/reservationController');
+const frontController = require('../controllers/reservationFrontController');
 
-/**
- * @swagger
- * tags:
- *   name: Reservations
- */
+// ================= API =================
+router.get('/', apiController.getReservations);
+router.get('/:id', apiController.getReservationById);
+router.post('/', apiController.createReservation);
+router.put('/:id', apiController.updateReservation);
+router.delete('/:id', apiController.deleteReservation);
 
-/**
- * @swagger
- * /catways/{id}/reservations:
- *   get:
- *     summary: Liste des réservations d’un catway
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *     responses:
- *       200:
- *         description: OK
- */
-router.get('/:id/reservations', reservationsController.getReservations);
+// ================= FRONT =================
+router.get('/page', frontController.list);
+router.get('/new', frontController.newForm);
+router.post('/new', frontController.create);
 
-/**
- * @swagger
- * /catways/{id}/reservations/{idReservation}:
- *   get:
- *     summary: Réservation par ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *       - in: path
- *         name: idReservation
- *         required: true
- *     responses:
- *       200:
- *         description: OK
- *       404:
- *         description: Not found
- */
-router.get('/:id/reservations/:idReservation', reservationsController.getReservationById);
+router.get('/edit/:id', frontController.editForm);
+router.post('/edit/:id', frontController.update);
 
-/**
- * @swagger
- * /catways/{id}/reservations:
- *   post:
- *     summary: Créer réservation
- *     requestBody:
- *       required: true
- *     responses:
- *       201:
- *         description: Créé
- */
-router.post('/:id/reservations', reservationsController.createReservation);
-
-/**
- * @swagger
- * /catways/{id}/reservations/{idReservation}:
- *   put:
- *     summary: Modifier réservation
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *       - in: path
- *         name: idReservation
- *         required: true
- *     requestBody:
- *       required: true
- *     responses:
- *       200:
- *         description: Modifié
- *       404:
- *         description: Not found
- */
-router.put('/:id/reservations/:idReservation', reservationsController.updateReservation);
-
-/**
- * @swagger
- * /catways/{id}/reservations/{idReservation}:
- *   delete:
- *     summary: Supprimer réservation
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *       - in: path
- *         name: idReservation
- *         required: true
- *     responses:
- *       200:
- *         description: Supprimé
- */
-router.delete('/:id/reservations/:idReservation', reservationsController.deleteReservation);
+router.post('/delete/:id', frontController.remove);
 
 module.exports = router;

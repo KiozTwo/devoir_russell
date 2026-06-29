@@ -7,7 +7,10 @@ const authController = require('../controllers/authController');
 router.get('/login', authController.loginPage);
 
 // Connexion
-router.post('/login', authController.login);
+router.post('/login', (req, res) => {
+    console.log("🔥 LOGIN ROUTE ATTEINTE");
+    res.send("LOGIN OK");
+});
 
 // Création d'un utilisateur
 router.post('/register', authController.register);

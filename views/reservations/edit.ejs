@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit réservation</title>
+</head>
+
+<body>
+
+    <h1>Modifier réservation</h1>
+
+    <form action="/reservations/edit/<%= reservation._id %>" method="POST">
+
+        <input name="clientName" value="<%= reservation.clientName %>"><br><br>
+        <input name="boatName" value="<%= reservation.boatName %>"><br><br>
+
+        <select name="catway">
+            <% catways.forEach(c=> { %>
+                <option value="<%= c._id %>" <%=reservation.catway==c._id ? 'selected' : '' %>>
+                    <%= c.catwayNumber %>
+                </option>
+                <% }) %>
+        </select>
+
+        <br><br>
+
+        <input type="date" name="startDate" value="<%= reservation.startDate.toISOString().split('T')[0] %>"><br><br>
+        <input type="date" name="endDate" value="<%= reservation.endDate.toISOString().split('T')[0] %>"><br><br>
+
+        <button>Modifier</button>
+
+    </form>
+
+</body>
+
+</html>

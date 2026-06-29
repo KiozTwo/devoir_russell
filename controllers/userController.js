@@ -1,6 +1,14 @@
 const User = require('../models/user');
 
-// GET all users
+/**
+ * Récupère la liste des utilisateurs.
+ *
+ * @async
+ * @function getUsers
+ * @param {import('express').Request} req Requête HTTP.
+ * @param {import('express').Response} res Réponse HTTP.
+ * @returns {Promise<void>}
+ */
 exports.getUsers = async (req, res) => {
     try {
         const users = await User.find().select('-password');
@@ -14,7 +22,15 @@ exports.getUsers = async (req, res) => {
     }
 };
 
-// GET one user
+/**
+ * Récupère un utilisateur par son identifiant.
+ *
+ * @async
+ * @function getUserById
+ * @param {import('express').Request} req Requête HTTP.
+ * @param {import('express').Response} res Réponse HTTP.
+ * @returns {Promise<void>}
+ */
 exports.getUserById = async (req, res) => {
     try {
 
@@ -36,7 +52,15 @@ exports.getUserById = async (req, res) => {
     }
 };
 
-// CREATE user
+/**
+ * Crée un nouvel utilisateur.
+ *
+ * @async
+ * @function createUser
+ * @param {import('express').Request} req Requête HTTP.
+ * @param {import('express').Response} res Réponse HTTP.
+ * @returns {Promise<void>}
+ */
 exports.createUser = async (req, res) => {
     try {
 
@@ -53,7 +77,15 @@ exports.createUser = async (req, res) => {
     }
 };
 
-// UPDATE user
+/**
+ * Met à jour un utilisateur.
+ *
+ * @async
+ * @function updateUser
+ * @param {import('express').Request} req Requête HTTP.
+ * @param {import('express').Response} res Réponse HTTP.
+ * @returns {Promise<void>}
+ */
 exports.updateUser = async (req, res) => {
     try {
 
@@ -80,7 +112,15 @@ exports.updateUser = async (req, res) => {
     }
 };
 
-// DELETE user
+/**
+ * Supprime un utilisateur.
+ *
+ * @async
+ * @function deleteUser
+ * @param {import('express').Request} req Requête HTTP.
+ * @param {import('express').Response} res Réponse HTTP.
+ * @returns {Promise<void>}
+ */
 exports.deleteUser = async (req, res) => {
     try {
 

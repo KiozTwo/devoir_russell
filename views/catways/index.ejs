@@ -1,38 +1,47 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Catways</title>
 </head>
+
 <body>
 
-<h1>Gestion des Catways</h1>
+    <h1>Gestion des Catways</h1>
 
-<a href="/catways/create">Créer un catway</a>
+    <a href="/catways/new">➕ Ajouter</a>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Nom</th>
-        <th>Type</th>
-        <th>Actions</th>
-    </tr>
-
-    <% catways.forEach(catway => { %>
+    <table border="1" width="100%">
         <tr>
-            <td><%= catway._id %></td>
-            <td><%= catway.name %></td>
-            <td><%= catway.type %></td>
-            <td>
-                <a href="/catways/edit/<%= catway._id %>">Modifier</a>
-
-                <form action="/catways/delete/<%= catway._id %>" method="POST" style="display:inline;">
-                    <button type="submit">Supprimer</button>
-                </form>
-            </td>
+            <th>Numéro</th>
+            <th>Type</th>
+            <th>État</th>
+            <th>Actions</th>
         </tr>
-    <% }) %>
 
-</table>
+        <% catways.forEach(catway=> { %>
+            <tr>
+                <td>
+                    <%= catway.catwayNumber %>
+                </td>
+                <td>
+                    <%= catway.type %>
+                </td>
+                <td>
+                    <%= catway.catwayState %>
+                </td>
+                <td>
+                    <a href="/catways/edit/<%= catway._id %>">Modifier</a>
+
+                    <form action="/catways/delete/<%= catway._id %>" method="POST" style="display:inline;">
+                        <button>Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            <% }) %>
+
+    </table>
 
 </body>
+
 </html>

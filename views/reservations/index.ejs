@@ -1,9 +1,55 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Accueil</title>
+    <title>Réservations</title>
 </head>
+
 <body>
-    <h1>Serveur OK - Projet Russell</h1>
+
+    <h1>Gestion des réservations</h1>
+
+    <a href="/reservations/new">➕ Ajouter</a>
+
+    <table border="1" width="100%">
+        <tr>
+            <th>Client</th>
+            <th>Bateau</th>
+            <th>Catway</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>Actions</th>
+        </tr>
+
+        <% reservations.forEach(r=> { %>
+            <tr>
+                <td>
+                    <%= r.clientName %>
+                </td>
+                <td>
+                    <%= r.boatName %>
+                </td>
+                <td>
+                    <%= r.catway ? r.catway.catwayNumber : "N/A" %>
+                </td>
+                <td>
+                    <%= new Date(r.startDate).toLocaleDateString() %>
+                </td>
+                <td>
+                    <%= new Date(r.endDate).toLocaleDateString() %>
+                </td>
+                <td>
+                    <a href="/reservations/edit/<%= r._id %>">Modifier</a>
+
+                    <form action="/reservations/delete/<%= r._id %>" method="POST" style="display:inline;">
+                        <button>Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            <% }) %>
+
+    </table>
+
 </body>
+
 </html>

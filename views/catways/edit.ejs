@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Modifier Catway</title>
+    <title>Edit Catway</title>
 </head>
+
 <body>
 
-<h1>Modifier Catway</h1>
+    <h1>Modifier Catway</h1>
 
-<form action="/catways/edit/<%= catway._id %>" method="POST">
-    <input type="text" name="name" value="<%= catway.name %>" required>
-    <input type="text" name="type" value="<%= catway.type %>" required>
-    <button type="submit">Modifier</button>
-</form>
+    <form action="/catways/edit/<%= catway._id %>" method="POST">
 
-<a href="/catways">Retour</a>
+        <input name="catwayNumber" value="<%= catway.catwayNumber %>"><br><br>
+        <input name="type" value="<%= catway.type %>"><br><br>
+        <input name="catwayState" value="<%= catway.catwayState %>"><br><br>
+
+        <button>Modifier</button>
+
+    </form>
 
 </body>
+
 </html>

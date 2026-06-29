@@ -1,87 +1,28 @@
 const express = require('express');
 const router = express.Router();
 
-const userController = require('../controllers/userController');
+const apiController = require('../controllers/userController');
+const frontController = require('../controllers/userFrontController');
 
-/**
- * @swagger
- * tags:
- *   name: Users
- */
+// ======================
+// API (Swagger déjà OK)
+// ======================
+router.get('/', apiController.getUsers);
+router.get('/:id', apiController.getUserById);
+router.post('/', apiController.createUser);
+router.put('/:id', apiController.updateUser);
+router.delete('/:id', apiController.deleteUser);
 
-/**
- * @swagger
- * /users:
- *   get:
- *     summary: Liste des utilisateurs
- *     responses:
- *       200:
- *         description: OK
- */
-router.get('/', userController.getUsers);
+// ======================
+// FRONT (EJS)
+// ======================
+router.get('/page', frontController.list);
+router.get('/new', frontController.newForm);
+router.post('/new', frontController.create);
 
-/**
- * @swagger
- * /users/{id}:
- *   get:
- *     summary: Utilisateur par ID
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *     responses:
- *       200:
- *         description: OK
- *       404:
- *         description: Not found
- */
-router.get('/:id', userController.getUserById);
+router.get('/edit/:id', frontController.editForm);
+router.post('/edit/:id', frontController.update);
 
-/**
- * @swagger
- * /users:
- *   post:
- *     summary: Créer utilisateur
- *     requestBody:
- *       required: true
- *     responses:
- *       201:
- *         description: Créé
- */
-router.post('/', userController.createUser);
-
-/**
- * @swagger
- * /users/{id}:
- *   put:
- *     summary: Modifier utilisateur
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *     requestBody:
- *       required: true
- *     responses:
- *       200:
- *         description: Modifié
- *       404:
- *         description: Not found
- */
-router.put('/:id', userController.updateUser);
-
-/**
- * @swagger
- * /users/{id}:
- *   delete:
- *     summary: Supprimer utilisateur
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *     responses:
- *       200:
- *         description: Supprimé
- */
-router.delete('/:id', userController.deleteUser);
+router.post('/delete/:id', frontController.remove);
 
 module.exports = router;

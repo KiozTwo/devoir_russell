@@ -1,9 +1,46 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Accueil</title>
+    <title>Users</title>
 </head>
+
 <body>
-    <h1>Serveur OK - Projet Russell</h1>
+
+    <h1>Gestion des utilisateurs</h1>
+
+    <a href="/users/new">➕ Ajouter</a>
+
+    <table border="1" width="100%">
+        <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+        </tr>
+
+        <% users.forEach(user=> { %>
+            <tr>
+                <td>
+                    <%= user.name %>
+                </td>
+                <td>
+                    <%= user.email %>
+                </td>
+                <td>
+                    <%= user.role %>
+                </td>
+                <td>
+                    <a href="/users/edit/<%= user._id %>">Modifier</a>
+
+                    <form action="/users/delete/<%= user._id %>" method="POST" style="display:inline;">
+                        <button>Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            <% }) %>
+    </table>
+
 </body>
+
 </html>

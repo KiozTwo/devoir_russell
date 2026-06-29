@@ -6,107 +6,129 @@
     <title>Dashboard</title>
 
     <style>
-        body{
+        body {
             font-family: Arial, Helvetica, sans-serif;
-            margin:40px;
+            margin: 40px;
         }
 
-        table{
+        table {
             border-collapse: collapse;
-            width:100%;
+            width: 100%;
         }
 
-        table, th, td{
-            border:1px solid #000;
+        table,
+        th,
+        td {
+            border: 1px solid #000;
         }
 
-        th, td{
-            padding:10px;
-            text-align:center;
+        th,
+        td {
+            padding: 10px;
+            text-align: center;
         }
 
-        ul{
-            list-style:none;
-            padding:0;
+        ul {
+            list-style: none;
+            padding: 0;
         }
 
-        li{
-            margin-bottom:10px;
+        li {
+            margin-bottom: 10px;
         }
 
-        a{
-            text-decoration:none;
+        a {
+            text-decoration: none;
         }
     </style>
 </head>
 
 <body>
 
-<h1>Tableau de bord</h1>
+    <h1>Tableau de bord</h1>
 
-<hr>
+    <hr>
 
-<h2>Utilisateur connecté</h2>
+    <h2>Utilisateur connecté</h2>
 
-<p><strong>Nom :</strong> <%= user?.name %></p>
-<p><strong>Email :</strong> <%= user?.email %></p>
-<p><strong>Date :</strong> <%= today.toLocaleDateString('fr-FR') %></p>
+    <p><strong>Nom :</strong>
+        <%= user?.name %>
+    </p>
+    <p><strong>Email :</strong>
+        <%= user?.email %>
+    </p>
+    <p><strong>Date :</strong>
+        <%= today.toLocaleDateString('fr-FR') %>
+    </p>
 
-<hr>
+    <hr>
 
-<h2>Navigation</h2>
+    <h2>Navigation</h2>
 
-<ul>
-    <li><a href="/users">Gestion des utilisateurs</a></li>
-    <li><a href="/catways">Gestion des Catways</a></li>
-    <li><a href="/reservations">Gestion des Réservations</a></li>
-    <li><a href="/api-docs">Documentation API</a></li>
-    <li><a href="/auth/logout">Déconnexion</a></li>
-</ul>
+    <ul>
+        <li><a href="/users">Gestion des utilisateurs</a></li>
+        <li><a href="/catways">Gestion des Catways</a></li>
+        <li><a href="/reservations">Gestion des Réservations</a></li>
+        <li><a href="/api-docs">Documentation API</a></li>
+        <li><a href="/auth/logout">Déconnexion</a></li>
+    </ul>
 
-<hr>
+    <hr>
 
-<h2>Réservations en cours</h2>
+    <h2>Réservations en cours</h2>
 
-<table>
+    <table>
 
-<thead>
-<tr>
-    <th>Client</th>
-    <th>Bateau</th>
-    <th>Catway</th>
-    <th>Date début</th>
-    <th>Date fin</th>
-</tr>
-</thead>
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Bateau</th>
+                <th>Catway</th>
+                <th>Date début</th>
+                <th>Date fin</th>
+            </tr>
+        </thead>
 
-<tbody>
+        <tbody>
 
-<% if (!reservations || reservations.length === 0) { %>
+            <% if (!reservations || reservations.length===0) { %>
 
-<tr>
-    <td colspan="5">Aucune réservation enregistrée.</td>
-</tr>
+                <tr>
+                    <td colspan="5">Aucune réservation enregistrée.</td>
+                </tr>
 
-<% } else { %>
+                <% } else { %>
 
-<% reservations.forEach(reservation => { %>
+                    <% reservations.forEach(reservation=> { %>
 
-<tr>
-    <td><%= reservation?.clientName %></td>
-    <td><%= reservation?.boatName %></td>
-    <td><%= reservation?.catway ? reservation.catway.catwayNumber : "Catway supprimé" %></td>
-    <td><%= reservation?.startDate ? new Date(reservation.startDate).toLocaleDateString('fr-FR') : "-" %></td>
-    <td><%= reservation?.endDate ? new Date(reservation.endDate).toLocaleDateString('fr-FR') : "-" %></td>
-</tr>
+                        <tr>
+                            <td>
+                                <%= reservation?.clientName %>
+                            </td>
+                            <td>
+                                <%= reservation?.boatName %>
+                            </td>
+                            <td>
+                                <%= reservation?.catway ? reservation.catway.catwayNumber : "Catway supprimé" %>
+                            </td>
+                            <td>
+                                <%= reservation?.startDate ? new Date(reservation.startDate).toLocaleDateString('fr-FR')
+                                    : "-" %>
+                            </td>
+                            <td>
+                                <%= reservation?.endDate ? new Date(reservation.endDate).toLocaleDateString('fr-FR')
+                                    : "-" %>
+                            </td>
+                        </tr>
 
-<% }) %>
+                        <% }) %>
 
-<% } %>
+                            <% } %>
 
-</tbody>
+        </tbody>
 
-</table>
+    </table>
 
 </body>
+
 </html>

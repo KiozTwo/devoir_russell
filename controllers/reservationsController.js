@@ -1,5 +1,11 @@
 const Reservation = require('../models/reservation');
 
+/**
+ * Récupère les réservations d'un catway.
+ *
+ * @async
+ * @function getReservations
+ */
 exports.getReservations = async (req, res) => {
     try {
         const reservations = await Reservation.find({
@@ -15,6 +21,12 @@ exports.getReservations = async (req, res) => {
     }
 };
 
+/**
+ * Récupère une réservation par son identifiant.
+ *
+ * @async
+ * @function getReservationById
+ */
 exports.getReservationById = async (req, res) => {
     try {
 
@@ -38,6 +50,12 @@ exports.getReservationById = async (req, res) => {
     }
 };
 
+/**
+ * Crée une réservation.
+ *
+ * @async
+ * @function createReservation
+ */
 exports.createReservation = async (req, res) => {
     try {
 
@@ -77,6 +95,12 @@ exports.createReservation = async (req, res) => {
     }
 };
 
+/**
+ * Met à jour une réservation.
+ *
+ * @async
+ * @function updateReservation
+ */
 exports.updateReservation = async (req, res) => {
     try {
 
@@ -124,6 +148,12 @@ exports.updateReservation = async (req, res) => {
     }
 };
 
+/**
+ * Supprime une réservation.
+ *
+ * @async
+ * @function deleteReservation
+ */
 exports.deleteReservation = async (req, res) => {
     try {
 

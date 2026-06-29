@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Créer réservation</title>
+</head>
+
+<body>
+
+    <h1>Créer réservation</h1>
+
+    <form action="/reservations/new" method="POST">
+
+        <input name="clientName" placeholder="Client"><br><br>
+        <input name="boatName" placeholder="Bateau"><br><br>
+
+        <select name="catway">
+            <% catways.forEach(c=> { %>
+                <option value="<%= c._id %>">
+                    <%= c.catwayNumber %>
+                </option>
+                <% }) %>
+        </select>
+
+        <br><br>
+
+        <input type="date" name="startDate"><br><br>
+        <input type="date" name="endDate"><br><br>
+
+        <button>Créer</button>
+
+    </form>
+
+</body>
+
+</html>

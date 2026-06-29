@@ -1,21 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/catwaysController');
 
-// FRONT
-router.get('/', controller.getCatwaysPage);
-router.get('/create', controller.createPage);
-router.get('/edit/:id', controller.editPage);
+const apiController = require('../controllers/catwayController');
+const frontController = require('../controllers/catwayFrontController');
 
-router.post('/create', controller.createCatway);
-router.post('/edit/:id', controller.updateCatway);
-router.post('/delete/:id', controller.deleteCatway);
+// ================= API =================
+router.get('/', apiController.getCatways);
+router.get('/:id', apiController.getCatwayById);
+router.post('/', apiController.createCatway);
+router.put('/:id', apiController.updateCatway);
+router.delete('/:id', apiController.deleteCatway);
 
-// API (Swagger)
-router.get('/api/all', controller.getCatways);
-router.get('/api/:id', controller.getCatwayById);
-router.post('/api', controller.createCatway);
-router.put('/api/:id', controller.updateCatway);
-router.delete('/api/:id', controller.deleteCatway);
+// ================= FRONT =================
+router.get('/page', frontController.list);
+router.get('/new', frontController.newForm);
+router.post('/new', frontController.create);
+
+router.get('/edit/:id', frontController.editForm);
+router.post('/edit/:id', frontController.update);
+
+router.post('/delete/:id', frontController.remove);
 
 module.exports = router;
