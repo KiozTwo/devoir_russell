@@ -6,6 +6,8 @@ const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
+const app = express();
+
 // ======================
 // ROUTES
 // ======================
@@ -21,15 +23,7 @@ const usersDashboardRoutes = require('./routes/dashboard/users');
 
 const auth = require('./middleware/auth');
 
-const app = express();
-
-// ======================
-// DEBUG MIDDLEWARE
-// ======================
-app.use((req, res, next) => {
-    console.log(`➡️ ${req.method} ${req.url}`);
-    next();
-});
+const reservationService = require('./services/reservationsService');
 
 // ======================
 // VIEW ENGINE
@@ -44,7 +38,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-// ⚠️ SESSION (OK pour dashboard, pas obligatoire pour API)
 app.use(session({
     secret: process.env.JWT_SECRET || 'secret',
     resave: false,
@@ -54,45 +47,39 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ======================
-// AUTH ROUTES (API)
+// DEBUG MIDDLEWARE
 // ======================
-// ✔️ CORRIGÉ : standard API REST
+app.use((req, res, next) => {
+    console.log(`➡️ ${req.method} ${req.url}`);
+    next();
+});
+
+// ======================
+// AUTH API
+// ======================
 app.use('/api/auth', authRoutes);
 
 // ======================
-// HOME
+// HOME (LOGIN PAGE)
 // ======================
 app.get('/', (req, res) => {
     res.render('login');
 });
 
 // ======================
-// DASHBOARD (FRONT - PROTÉGÉ)
+// LOGIN POST (IMPORTANT)
 // ======================
-app.use('/dashboard/catways', auth, catwaysDashboardRoutes);
-app.use('/dashboard/reservations', auth, reservationDashboardRoutes);
-app.use('/dashboard/users', auth, usersDashboardRoutes);
+// 👉 transforme login JSON en redirection dashboard
+app.post('/login-success', (req, res) => {
+    req.session.user = req.body.user; // tu dois envoyer user côté front
+    return res.redirect('/dashboard');
+});
 
 // ======================
-// API (PROTÉGÉES)
+// DASHBOARD PAGE
 // ======================
-app.use('/api/users', auth, userApiRoutes);
-app.use('/api/catways', auth, catwaysApiRoutes);
-app.use('/api/reservations', auth, reservationApiRoutes);
-
-// ======================
-// SWAGGER
-// ======================
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customSiteTitle: "API Russell Marina",
-    customCss: '.swagger-ui .topbar { display: none }'
-}));
-
-// DASHBOARD HOME
 app.get('/dashboard', auth, async (req, res) => {
     try {
-        const reservationService = require('./services/reservationService');
-
         const reservations = await reservationService.getAll();
 
         res.render('dashboard', {
@@ -101,10 +88,31 @@ app.get('/dashboard', auth, async (req, res) => {
             reservations
         });
 
-    } catch (error) {
+    } catch (err) {
+        console.log(err);
         res.status(500).send("Erreur dashboard");
     }
 });
+
+// ======================
+// DASHBOARD MODULES
+// ======================
+app.use('/dashboard/catways', auth, catwaysDashboardRoutes);
+app.use('/dashboard/reservations', auth, reservationDashboardRoutes);
+app.use('/dashboard/users', auth, usersDashboardRoutes);
+
+// ======================
+// API PROTECTED
+// ======================
+app.use('/api/users', auth, userApiRoutes);
+app.use('/api/catways', auth, catwaysApiRoutes);
+app.use('/api/reservations', auth, reservationApiRoutes);
+
+// ======================
+// SWAGGER
+// ======================
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // ======================
 // TEST ROUTES
 // ======================
@@ -112,12 +120,8 @@ app.get('/test', (req, res) => {
     res.json({ message: "Server OK" });
 });
 
-app.get('/debug', (req, res) => {
-    res.send("Dashboard OK");
-});
-
 // ======================
-// 404 HANDLER
+// 404 (LAST)
 // ======================
 app.use((req, res) => {
     res.status(404).json({
@@ -126,7 +130,4 @@ app.use((req, res) => {
     });
 });
 
-// ======================
-// EXPORT
-// ======================
 module.exports = app;

@@ -2,12 +2,15 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const userService = require('../../services/usersService');
 
+// ======================
 // REGISTER
+// ======================
 exports.register = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
+                success: false,
                 message: "Validation error",
                 errors: errors.array()
             });
@@ -21,21 +24,29 @@ exports.register = async (req, res) => {
         });
 
         return res.status(201).json({
+            success: true,
             message: "Utilisateur créé",
             user
         });
 
     } catch (error) {
-        return res.status(500).json({ message: "Erreur serveur" });
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Erreur serveur"
+        });
     }
 };
 
-// LOGIN (IMPORTANT: SESSION + REDIRECT)
+// ======================
+// LOGIN (FIXED PROPERLY)
+// ======================
 exports.login = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
+                success: false,
                 message: "Validation error",
                 errors: errors.array()
             });
@@ -46,30 +57,56 @@ exports.login = async (req, res) => {
         const user = await userService.findByEmail(email);
 
         if (!user) {
-            return res.status(401).json({ message: "Utilisateur introuvable" });
+            return res.status(401).json({
+                success: false,
+                message: "Utilisateur introuvable"
+            });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.status(401).json({ message: "Mot de passe incorrect" });
+            return res.status(401).json({
+                success: false,
+                message: "Mot de passe incorrect"
+            });
         }
 
-        // SESSION USER
+        // SESSION
         req.session.user = {
             id: user._id,
             email: user.email
         };
 
-        // REDIRECT DASHBOARD
-        return res.redirect('/dashboard');
+        // ======================
+        // IMPORTANT: DOUBLE MODE
+        // ======================
+
+        // Si appel navigateur classique
+        if (!req.xhr && req.headers.accept?.includes('text/html')) {
+            return res.redirect('/dashboard');
+        }
+
+        // Si API / fetch
+        return res.json({
+            success: true,
+            message: "Login OK",
+            redirect: "/dashboard",
+            user: req.session.user
+        });
 
     } catch (error) {
-        return res.status(500).json({ message: "Erreur serveur" });
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Erreur serveur"
+        });
     }
 };
 
+// ======================
 // LOGOUT
+// ======================
 exports.logout = (req, res) => {
     req.session.destroy(() => {
         res.redirect('/');
