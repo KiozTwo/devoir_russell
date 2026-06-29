@@ -8,7 +8,21 @@ const {
     loginValidator
 } = require('../../validators/userValidator');
 
-router.post('/register', registerValidator, authController.register);
-router.post('/login', loginValidator, authController.login);
+// REGISTER
+router.post(
+    '/register',
+    [...registerValidator],
+    authController.register
+);
+
+// LOGIN
+router.post(
+    '/login',
+    [...loginValidator],
+    authController.login
+);
+
+// LOGOUT
+router.get('/logout', authController.logout);
 
 module.exports = router;

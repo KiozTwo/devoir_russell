@@ -6,14 +6,15 @@ const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
+// ======================
+// ROUTES
+// ======================
 const authRoutes = require('./routes/api/authRoutes');
 
-// API routes
 const userApiRoutes = require('./routes/api/users');
 const catwaysApiRoutes = require('./routes/api/catways');
 const reservationApiRoutes = require('./routes/api/reservations');
 
-// Dashboard routes
 const catwaysDashboardRoutes = require('./routes/dashboard/catways');
 const reservationDashboardRoutes = require('./routes/dashboard/reservations');
 const usersDashboardRoutes = require('./routes/dashboard/users');
@@ -21,7 +22,6 @@ const usersDashboardRoutes = require('./routes/dashboard/users');
 const auth = require('./middleware/auth');
 
 const app = express();
-
 
 // ======================
 // DEBUG MIDDLEWARE
@@ -31,13 +31,11 @@ app.use((req, res, next) => {
     next();
 });
 
-
 // ======================
 // VIEW ENGINE
 // ======================
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
 
 // ======================
 // GLOBAL MIDDLEWARES
@@ -46,6 +44,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
+// ⚠️ SESSION (OK pour dashboard, pas obligatoire pour API)
 app.use(session({
     secret: process.env.JWT_SECRET || 'secret',
     resave: false,
@@ -54,12 +53,11 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 // ======================
-// AUTH ROUTES
+// AUTH ROUTES (API)
 // ======================
-app.use('/auth', authRoutes);
-
+// ✔️ CORRIGÉ : standard API REST
+app.use('/api/auth', authRoutes);
 
 // ======================
 // HOME
@@ -68,22 +66,19 @@ app.get('/', (req, res) => {
     res.render('login');
 });
 
-
 // ======================
-// DASHBOARD (FRONT)
+// DASHBOARD (FRONT - PROTÉGÉ)
 // ======================
 app.use('/dashboard/catways', auth, catwaysDashboardRoutes);
 app.use('/dashboard/reservations', auth, reservationDashboardRoutes);
 app.use('/dashboard/users', auth, usersDashboardRoutes);
 
-
 // ======================
-// API (SOURCE UNIQUE DES DONNÉES)
+// API (PROTÉGÉES)
 // ======================
 app.use('/api/users', auth, userApiRoutes);
 app.use('/api/catways', auth, catwaysApiRoutes);
 app.use('/api/reservations', auth, reservationApiRoutes);
-
 
 // ======================
 // SWAGGER
@@ -93,7 +88,23 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     customCss: '.swagger-ui .topbar { display: none }'
 }));
 
+// DASHBOARD HOME
+app.get('/dashboard', auth, async (req, res) => {
+    try {
+        const reservationService = require('./services/reservationService');
 
+        const reservations = await reservationService.getAll();
+
+        res.render('dashboard', {
+            user: req.session.user,
+            today: new Date(),
+            reservations
+        });
+
+    } catch (error) {
+        res.status(500).send("Erreur dashboard");
+    }
+});
 // ======================
 // TEST ROUTES
 // ======================
@@ -105,7 +116,6 @@ app.get('/debug', (req, res) => {
     res.send("Dashboard OK");
 });
 
-
 // ======================
 // 404 HANDLER
 // ======================
@@ -115,7 +125,6 @@ app.use((req, res) => {
         message: "Route introuvable"
     });
 });
-
 
 // ======================
 // EXPORT
