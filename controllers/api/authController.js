@@ -1,7 +1,10 @@
+const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
+const userService = require('../../services/usersService');
+
 exports.register = async (req, res) => {
     try {
         const errors = validationResult(req);
-
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 message: "Validation error",
@@ -22,9 +25,10 @@ exports.register = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: "Erreur serveur"
-        });
+        return res.status(500).json({ message: "Erreur serveur" });
     }
+};
+
+exports.login = async (req, res) => {
+    return res.json({ message: "login OK" });
 };

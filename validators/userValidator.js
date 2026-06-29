@@ -1,19 +1,26 @@
-const { body } = require('express-validator');
+const { check } = require('express-validator');
 
-exports.registerValidator = [
-    body('email')
+const registerValidator = [
+    check('email')
         .isEmail()
         .withMessage('Email invalide'),
 
-    body('password')
+    check('password')
         .isLength({ min: 6 })
-        .withMessage('Mot de passe minimum 6 caractères')
+        .withMessage('Mot de passe trop court')
 ];
 
-exports.loginValidator = [
-    body('email')
-        .isEmail(),
+const loginValidator = [
+    check('email')
+        .isEmail()
+        .withMessage('Email invalide'),
 
-    body('password')
+    check('password')
         .notEmpty()
+        .withMessage('Mot de passe requis')
 ];
+
+module.exports = {
+    registerValidator,
+    loginValidator
+};
