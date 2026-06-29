@@ -2,25 +2,33 @@ const router = require('express').Router();
 const auth = require('../../middleware/auth');
 const fetch = require('node-fetch');
 
-// DASHBOARD USERS via API
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+
+// ======================
+// DASHBOARD USERS
+// ======================
 router.get('/', auth, async (req, res) => {
     try {
-        const response = await fetch('http://localhost:3000/api/users', {
+        const response = await fetch(`${BASE_URL}/api/users`, {
             headers: {
-                Authorization: req.headers.authorization
+                Authorization: req.headers.authorization || ''
             }
         });
 
+        if (!response.ok) {
+            throw new Error(`Erreur API : ${response.status}`);
+        }
+
         const users = await response.json();
 
-        res.render('dashboard/users', {
+        return res.render('dashboard/users', {
             user: req.user,
             users
         });
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Erreur serveur dashboard users");
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Erreur serveur dashboard users");
     }
 });
 
