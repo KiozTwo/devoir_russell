@@ -48,17 +48,9 @@
 
 <h2>Utilisateur connecté</h2>
 
-<p>
-<strong>Nom :</strong> <%= user.name %>
-</p>
-
-<p>
-<strong>Email :</strong> <%= user.email %>
-</p>
-
-<p>
-<strong>Date :</strong> <%= today.toLocaleDateString('fr-FR') %>
-</p>
+<p><strong>Nom :</strong> <%= user?.name %></p>
+<p><strong>Email :</strong> <%= user?.email %></p>
+<p><strong>Date :</strong> <%= today.toLocaleDateString('fr-FR') %></p>
 
 <hr>
 
@@ -98,14 +90,14 @@
 
 <% } else { %>
 
-<% (reservations || []).forEach(reservation => { %>
+<% reservations.forEach(reservation => { %>
 
 <tr>
-    <td><%= reservation.clientName %></td>
-    <td><%= reservation.boatName %></td>
-    <td><%= reservation.catway ? reservation.catway.catwayNumber : "Catway supprimé" %></td>
-    <td><%= new Date(reservation.startDate).toLocaleDateString('fr-FR') %></td>
-    <td><%= new Date(reservation.endDate).toLocaleDateString('fr-FR') %></td>
+    <td><%= reservation?.clientName %></td>
+    <td><%= reservation?.boatName %></td>
+    <td><%= reservation?.catway ? reservation.catway.catwayNumber : "Catway supprimé" %></td>
+    <td><%= reservation?.startDate ? new Date(reservation.startDate).toLocaleDateString('fr-FR') : "-" %></td>
+    <td><%= reservation?.endDate ? new Date(reservation.endDate).toLocaleDateString('fr-FR') : "-" %></td>
 </tr>
 
 <% }) %>

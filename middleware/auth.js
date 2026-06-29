@@ -1,6 +1,14 @@
-UserSchema.pre('save', async function () {
-    if (!this.isModified('password')) return;
+module.exports = (req, res, next) => {
+    try {
+        if (!req.session || !req.session.user) {
+            return res.redirect('/auth/login');
+        }
 
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-});
+        req.user = req.session.user;
+        next();
+
+    } catch (error) {
+        console.error("Auth middleware error:", error);
+        return res.status(500).send("Erreur d'authentification");
+    }
+};

@@ -83,4 +83,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // ======================
 // EXPORT
 // ======================
+app.get('/test', (req, res) => {
+    res.send("OK SERVER WORKING");
+});
 module.exports = app;
