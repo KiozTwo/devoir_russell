@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const ReservationSchema = new mongoose.Schema({
     catway: {
         type: mongoose.Schema.Types.ObjectId,

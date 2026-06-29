@@ -1,98 +1,43 @@
 const Catway = require('../models/catway');
 
-exports.getCatways = async (req, res) => {
-    try {
-        const catways = await Catway.find();
-
-        res.status(200).json(catways);
-
-    } catch (error) {
-        res.status(500).json({
-            error: error.message
-        });
-    }
+// FRONT
+exports.getCatwaysPage = async (req, res) => {
+    const catways = await Catway.find();
+    res.render('catways/index', { catways });
 };
 
-exports.getCatwayById = async (req, res) => {
-    try {
-
-        const catway = await Catway.findById(req.params.id);
-
-        if (!catway) {
-            return res.status(404).json({
-                message: 'Catway introuvable'
-            });
-        }
-
-        res.status(200).json(catway);
-
-    } catch (error) {
-        res.status(500).json({
-            error: error.message
-        });
-    }
+exports.createPage = (req, res) => {
+    res.render('catways/create');
 };
 
+exports.editPage = async (req, res) => {
+    const catway = await Catway.findById(req.params.id);
+    res.render('catways/edit', { catway });
+};
+
+// CRUD
 exports.createCatway = async (req, res) => {
-    try {
-
-        const catway = await Catway.create(req.body);
-
-        res.status(201).json(catway);
-
-    } catch (error) {
-        res.status(500).json({
-            error: error.message
-        });
-    }
+    await Catway.create(req.body);
+    res.redirect('/catways');
 };
 
 exports.updateCatway = async (req, res) => {
-    try {
-
-        const catway = await Catway.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true
-            }
-        );
-
-        if (!catway) {
-            return res.status(404).json({
-                message: 'Catway introuvable'
-            });
-        }
-
-        res.status(200).json(catway);
-
-    } catch (error) {
-        res.status(500).json({
-            error: error.message
-        });
-    }
+    await Catway.findByIdAndUpdate(req.params.id, req.body);
+    res.redirect('/catways');
 };
 
 exports.deleteCatway = async (req, res) => {
-    try {
+    await Catway.findByIdAndDelete(req.params.id);
+    res.redirect('/catways');
+};
 
-        const deleted = await Catway.findByIdAndDelete(
-            req.params.id
-        );
+// API
+exports.getCatways = async (req, res) => {
+    const data = await Catway.find();
+    res.json(data);
+};
 
-        if (!deleted) {
-            return res.status(404).json({
-                message: 'Catway introuvable'
-            });
-        }
-
-        res.status(200).json({
-            message: 'Catway supprimé'
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            error: error.message
-        });
-    }
+exports.getCatwayById = async (req, res) => {
+    const data = await Catway.findById(req.params.id);
+    res.json(data);
 };

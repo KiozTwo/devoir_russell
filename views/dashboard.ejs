@@ -1,25 +1,222 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
+
     <meta charset="UTF-8">
+
     <title>Dashboard</title>
+
+    <style>
+
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            margin:40px;
+        }
+
+        table{
+            border-collapse: collapse;
+            width:100%;
+        }
+
+        table, th, td{
+            border:1px solid #000;
+        }
+
+        th, td{
+            padding:10px;
+            text-align:center;
+        }
+
+        ul{
+            list-style:none;
+            padding:0;
+        }
+
+        li{
+            margin-bottom:10px;
+        }
+
+        a{
+            text-decoration:none;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-    <h1>🚀 Dashboard Russell</h1>
+<h1>Tableau de bord</h1>
 
-    <p>Bienvenue dans le tableau de bord</p>
+<hr>
 
-    <hr>
+<h2>Utilisateur connecté</h2>
 
-    <ul>
-        <li><a href="/users">Users API</a></li>
-        <li><a href="/catways">Catways API</a></li>
-    </ul>
+<p>
 
-    <hr>
+<strong>Nom :</strong>
 
-  <a href="/auth/logout">Déconnexion</a>
+<%= user.name %>
+
+</p>
+
+<p>
+
+<strong>Email :</strong>
+
+<%= user.email %>
+
+</p>
+
+<p>
+
+<strong>Date :</strong>
+
+<%= today.toLocaleDateString('fr-FR') %>
+
+</p>
+
+<hr>
+
+<h2>Navigation</h2>
+
+<ul>
+
+<li>
+
+<a href="/users">
+
+Gestion des utilisateurs
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/catways">
+
+Gestion des Catways
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/reservations">
+
+Gestion des Réservations
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/api-docs">
+
+Documentation API
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/auth/logout">
+
+Déconnexion
+
+</a>
+
+</li>
+
+</ul>
+
+<hr>
+
+<h2>Réservations en cours</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Client</th>
+
+<th>Bateau</th>
+
+<th>Catway</th>
+
+<th>Date début</th>
+
+<th>Date fin</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<% if(reservations.length === 0){ %>
+
+<tr>
+
+<td colspan="5">
+
+Aucune réservation enregistrée.
+
+</td>
+
+</tr>
+
+<% } %>
+
+<% reservations.forEach(reservation => { %>
+
+<tr>
+
+<td>
+
+<%= reservation.clientName %>
+
+</td>
+
+<td>
+
+<%= reservation.boatName %>
+
+</td>
+
+<td>
+
+<%= reservation.catway ? reservation.catway.catwayNumber : "Catway supprimé" %>
+
+</td>
+
+<td>
+
+<%= new Date(reservation.startDate).toLocaleDateString('fr-FR') %>
+
+</td>
+
+<td>
+
+<%= new Date(reservation.endDate).toLocaleDateString('fr-FR') %>
+
+</td>
+
+</tr>
+
+<% }) %>
+
+</tbody>
+
+</table>
 
 </body>
+
 </html>

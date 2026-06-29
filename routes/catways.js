@@ -1,12 +1,21 @@
 const express = require('express');
 const router = express.Router();
+const controller = require('../controllers/catwaysController');
 
-const catwaysController = require('../controllers/catwaysController');
+// FRONT
+router.get('/', controller.getCatwaysPage);
+router.get('/create', controller.createPage);
+router.get('/edit/:id', controller.editPage);
 
-router.get('/', catwaysController.getCatways);
-router.get('/:id', catwaysController.getCatwayById);
-router.post('/', catwaysController.createCatway);
-router.put('/:id', catwaysController.updateCatway);
-router.delete('/:id', catwaysController.deleteCatway);
+router.post('/create', controller.createCatway);
+router.post('/edit/:id', controller.updateCatway);
+router.post('/delete/:id', controller.deleteCatway);
+
+// API (Swagger)
+router.get('/api/all', controller.getCatways);
+router.get('/api/:id', controller.getCatwayById);
+router.post('/api', controller.createCatway);
+router.put('/api/:id', controller.updateCatway);
+router.delete('/api/:id', controller.deleteCatway);
 
 module.exports = router;

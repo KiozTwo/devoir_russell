@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -22,11 +22,8 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Hash du mot de passe avant sauvegarde
 UserSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) {
-        return next();
-    }
+    if (!this.isModified('password')) return next();
 
     try {
         const salt = await bcrypt.genSalt(10);
@@ -37,8 +34,7 @@ UserSchema.pre('save', async function(next) {
     }
 });
 
-// Méthode de comparaison pour le login
-UserSchema.methods.comparePassword = async function(password) {
+UserSchema.methods.comparePassword = function(password) {
     return bcrypt.compare(password, this.password);
 };
 

@@ -6,12 +6,22 @@
 </head>
 <body>
 
-    <h1>Connexion</h1>
+    <h1>Gestion des Catways</h1>
+
+    <p>
+        Bienvenue sur l'application de gestion des catways.
+        Cette application permet de gérer les utilisateurs,
+        les catways et les réservations du port.
+    </p>
+
+    <hr>
+
+    <h2>Connexion</h2>
 
     <form action="/auth/login" method="POST">
 
         <div>
-            <label>Email</label>
+            <label>Email :</label><br>
             <input
                 type="email"
                 name="email"
@@ -22,7 +32,7 @@
         <br>
 
         <div>
-            <label>Mot de passe</label>
+            <label>Mot de passe :</label><br>
             <input
                 type="password"
                 name="password"
@@ -37,6 +47,14 @@
         </button>
 
     </form>
+
+    <hr>
+
+    <p>
+        <a href="/api-docs">
+            Documentation de l'API
+        </a>
+    </p>
 
 </body>
 </html>
