@@ -2,12 +2,9 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const userService = require('../../services/usersService');
 
-// LOGIN
-exports.login = async (req, res) => {
+// REGISTER
+exports.register = async (req, res) => {
     try {
-        console.log("LOGIN HIT");
-        console.log("BODY:", req.body);
-
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -16,6 +13,26 @@ exports.login = async (req, res) => {
             });
         }
 
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+        const user = await userService.createUser({
+            email: req.body.email,
+            password: hashedPassword
+        });
+
+        return res.status(201).json({
+            message: "Utilisateur créé",
+            user
+        });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
+// LOGIN
+exports.login = async (req, res) => {
+    try {
         const { email, password } = req.body;
 
         const user = await userService.findByEmail(email);
@@ -30,17 +47,21 @@ exports.login = async (req, res) => {
             return res.status(401).send("Mot de passe incorrect");
         }
 
-        // SESSION
         req.session.user = {
             id: user._id,
             email: user.email
         };
 
-        // REDIRECTION DASHBOARD
         return res.redirect('/dashboard');
 
     } catch (error) {
-        console.log(error);
         return res.status(500).send("Erreur serveur");
     }
+};
+
+// LOGOUT
+exports.logout = (req, res) => {
+    req.session.destroy(() => {
+        res.redirect('/');
+    });
 };

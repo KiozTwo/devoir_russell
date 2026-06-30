@@ -3,26 +3,8 @@ const router = express.Router();
 
 const authController = require('../../controllers/api/authController');
 
-const {
-    registerValidator,
-    loginValidator
-} = require('../../validators/userValidator');
-
-// REGISTER
-router.post(
-    '/register',
-    [...registerValidator],
-    authController.register
-);
-
-// LOGIN
-router.post(
-    '/login',
-    [...loginValidator],
-    authController.login
-);
-
-// LOGOUT
+router.post('/register', authController.register);
+router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 
 module.exports = router;
