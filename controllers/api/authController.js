@@ -30,7 +30,7 @@ exports.register = async (req, res) => {
     }
 };
 
-// LOGIN
+// LOGIN (SESSION ONLY)
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -47,14 +47,19 @@ exports.login = async (req, res) => {
             return res.status(401).send("Mot de passe incorrect");
         }
 
+        // 🔥 SESSION LOGIN
         req.session.user = {
             id: user._id,
             email: user.email
         };
 
+        console.log("LOGIN SUCCESS:", req.session.user);
+
+        // REDIRECTION DASHBOARD
         return res.redirect('/dashboard');
 
     } catch (error) {
+        console.log(error);
         return res.status(500).send("Erreur serveur");
     }
 };

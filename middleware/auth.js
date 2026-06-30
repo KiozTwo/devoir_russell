@@ -1,23 +1,16 @@
-const jwt = require('jsonwebtoken');
-
 module.exports = (req, res, next) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
-
-        if (!token) {
+        // Vérifie uniquement la session
+        if (!req.session || !req.session.user) {
             return res.status(401).json({ message: "Non autorisé" });
         }
 
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET || "secret_key"
-        );
-
-        req.user = decoded;
+        // optionnel : injecte user dans req
+        req.user = req.session.user;
 
         next();
 
     } catch (error) {
-        return res.status(401).json({ message: "Token invalide" });
+        return res.status(401).json({ message: "Non autorisé" });
     }
 };

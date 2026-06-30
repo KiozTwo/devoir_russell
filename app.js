@@ -41,7 +41,10 @@ app.use(methodOverride('_method'));
 app.use(session({
     secret: process.env.JWT_SECRET || 'secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        secure: false
+    }
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
