@@ -57,22 +57,12 @@ app.use((req, res, next) => {
 // ======================
 // AUTH API
 // ======================
-app.use('/api/auth', authRoutes);
-
+app.use('/auth', authRoutes);
 // ======================
 // HOME (LOGIN PAGE)
 // ======================
 app.get('/', (req, res) => {
     res.render('login');
-});
-
-// ======================
-// LOGIN POST (IMPORTANT)
-// ======================
-// 👉 transforme login JSON en redirection dashboard
-app.post('/login-success', (req, res) => {
-    req.session.user = req.body.user; // tu dois envoyer user côté front
-    return res.redirect('/dashboard');
 });
 
 // ======================
