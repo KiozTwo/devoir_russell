@@ -1,34 +1,23 @@
 const router = require('express').Router();
 const auth = require('../../middleware/auth');
-const fetch = require('node-fetch');
+const usersService = require('../../services/usersService');
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
-
-// ======================
-// DASHBOARD CATWAYS
-// ======================
 router.get('/', auth, async (req, res) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/catways`, {
-            headers: {
-                Authorization: req.headers.authorization || ''
-            }
+        console.log("SESSION :", req.session.user);
+
+        const users = await usersService.getAllUsers();
+
+        console.log("USERS :", users);
+
+        res.render('users/index', {
+            user: req.session.user,
+            users
         });
 
-        if (!response.ok) {
-            throw new Error(`Erreur API : ${response.status}`);
-        }
-
-        const catways = await response.json();
-
-        return res.render('dashboard/catways', {
-            user: req.user,
-            catways
-        });
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send("Erreur serveur dashboard");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err.stack);
     }
 });
 

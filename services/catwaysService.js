@@ -1,15 +1,23 @@
-const Catway = require('../models/catway');
+const router = require('express').Router();
+const auth = require('../../middleware/auth');
+const catwaysService = require('../../services/catwaysService');
 
-exports.getAllCatways = () => Catway.find();
+router.get('/', auth, async (req, res) => {
 
-exports.getCatwayById = (id) => Catway.findById(id);
+    try {
 
-exports.createCatway = (data) => Catway.create(data);
+        const catways = await catwaysService.getAllCatways();
 
-exports.updateCatway = (id, data) =>
-    Catway.findByIdAndUpdate(id, data, {
-        new: true,
-        runValidators: true
-    });
+        res.render('catways/index', {
+            user: req.session.user,
+            catways
+        });
 
-exports.deleteCatway = (id) => Catway.findByIdAndDelete(id);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Erreur serveur dashboard catways");
+    }
+
+});
+
+module.exports = router;
