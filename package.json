@@ -30,5 +30,9 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
+  },
+  "overrides": {
+    "debug": "4.3.4",
+    "iconv-lite": "0.6.3"
   }
 }
