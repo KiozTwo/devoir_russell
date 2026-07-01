@@ -2,18 +2,21 @@ const bcrypt = require('bcryptjs');
 
 let users = [];
 
-// 🔥 création d’un user test au démarrage
+// ======================
+// USER TEST AUTO
+// ======================
 (async () => {
     const hashedPassword = await bcrypt.hash('test123', 10);
 
     users.push({
         _id: "1",
+        name: "Capitaine",
         email: "capitaine@test.com",
         password: hashedPassword,
         role: "admin"
     });
 
-    console.log("✅ USER TEST CREATED: capitaine@test.com / test123");
+    console.log("✅ USER TEST READY: capitaine@test.com / test123");
 })();
 
 module.exports = {
@@ -22,8 +25,12 @@ module.exports = {
     create: async (data) => {
         const user = {
             _id: Date.now().toString(),
-            ...data
+            name: data.name || "No name",
+            email: data.email,
+            password: data.password || "",
+            role: data.role || "user"
         };
+
         users.push(user);
         return user;
     },

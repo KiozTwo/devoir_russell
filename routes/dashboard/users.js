@@ -19,7 +19,7 @@ router.get('/new', auth, (req, res) => {
 });
 
 // ======================
-// CREATE USER (FIXÉ)
+// CREATE USER
 // ======================
 router.post('/new', auth, async (req, res) => {
     try {
@@ -27,7 +27,7 @@ router.post('/new', auth, async (req, res) => {
             name: req.body.name,
             email: req.body.email,
             password: req.body.password,
-            role: req.body.role
+            role: req.body.role || 'user'
         });
 
         return res.redirect('/dashboard/users');
@@ -69,6 +69,22 @@ router.post('/edit/:id', auth, async (req, res) => {
         email: req.body.email,
         role: req.body.role
     };
+
+    return res.redirect('/dashboard/users');
+});
+
+// ======================
+// DELETE USER (AJOUTÉ ✔)
+// ======================
+router.post('/delete/:id', auth, async (req, res) => {
+    const users = await userService.getAll();
+    const index = users.findIndex(u => u._id === req.params.id);
+
+    if (index === -1) {
+        return res.status(404).send("User introuvable");
+    }
+
+    users.splice(index, 1);
 
     return res.redirect('/dashboard/users');
 });
