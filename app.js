@@ -6,12 +6,10 @@ const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-
 const app = express();
 
 // ======================
-// ROUTES
+// IMPORT ROUTES
 // ======================
 const authRoutes = require('./routes/api/authRoutes');
 
@@ -39,10 +37,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
+// IMPORTANT POUR RENDER
 app.set('trust proxy', 1);
 
 // ======================
-// SESSION FIXED
+// SESSION (PRODUCTION SAFE)
 // ======================
 app.use(session({
     secret: process.env.JWT_SECRET || 'secret',
@@ -55,19 +54,25 @@ app.use(session({
     }
 }));
 
+// ======================
+// STATIC FILES
+// ======================
 app.use(express.static(path.join(__dirname, 'public')));
 
-// DEBUG
+// ======================
+// DEBUG LOG
+// ======================
 app.use((req, res, next) => {
     console.log(`➡️ ${req.method} ${req.url}`);
     next();
 });
 
 // ======================
-// ROUTES PUBLIQUES
+// AUTH ROUTES
 // ======================
 app.use('/auth', authRoutes);
 
+// HOME
 app.get('/', (req, res) => {
     res.render('login');
 });
@@ -76,24 +81,30 @@ app.get('/', (req, res) => {
 // DASHBOARD
 // ======================
 app.get('/dashboard', auth, async (req, res) => {
-    const reservations = await reservationService.getAll();
+    try {
+        const reservations = await reservationService.getAll();
 
-    res.render('dashboard', {
-        user: req.session.user,
-        today: new Date(),
-        reservations
-    });
+        res.render('dashboard', {
+            user: req.session.user,
+            today: new Date(),
+            reservations
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur dashboard");
+    }
 });
 
 // ======================
-// MODULES
+// DASHBOARD MODULES
 // ======================
 app.use('/dashboard/users', auth, usersDashboardRoutes);
 app.use('/dashboard/catways', auth, catwaysDashboardRoutes);
 app.use('/dashboard/reservations', auth, reservationDashboardRoutes);
 
 // ======================
-// API
+// API (PROTÉGÉE)
 // ======================
 app.use('/api/users', auth, userApiRoutes);
 app.use('/api/catways', auth, catwaysApiRoutes);
@@ -105,7 +116,7 @@ app.use('/api/reservations', auth, reservationApiRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ======================
-// TEST
+// TEST ROUTE
 // ======================
 app.get('/test', (req, res) => {
     res.json({ message: "Server OK" });

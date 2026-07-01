@@ -1,41 +1,31 @@
-const bcrypt = require('bcryptjs');
+const User = require('../models/User');
 
-let users = [];
+// GET ALL USERS
+exports.getAll = async () => {
+    return await User.find();
+};
 
-// ======================
-// USER TEST AUTO
-// ======================
-(async () => {
-    const hashedPassword = await bcrypt.hash('test123', 10);
+// CREATE USER
+exports.create = async (data) => {
+    return await User.create(data);
+};
 
-    users.push({
-        _id: "1",
-        name: "Capitaine",
-        email: "capitaine@test.com",
-        password: hashedPassword,
-        role: "admin"
-    });
+// FIND BY EMAIL
+exports.findByEmail = async (email) => {
+    return await User.findOne({ email });
+};
 
-    console.log("✅ USER TEST READY: capitaine@test.com / test123");
-})();
+// FIND BY ID
+exports.findById = async (id) => {
+    return await User.findById(id);
+};
 
-module.exports = {
-    getAll: async () => users,
+// UPDATE
+exports.update = async (id, data) => {
+    return await User.findByIdAndUpdate(id, data, { new: true });
+};
 
-    create: async (data) => {
-        const user = {
-            _id: Date.now().toString(),
-            name: data.name || "No name",
-            email: data.email,
-            password: data.password || "",
-            role: data.role || "user"
-        };
-
-        users.push(user);
-        return user;
-    },
-
-    findByEmail: async (email) => {
-        return users.find(u => u.email === email);
-    }
+// DELETE
+exports.delete = async (id) => {
+    return await User.findByIdAndDelete(id);
 };
