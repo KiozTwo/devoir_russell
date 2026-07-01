@@ -8,8 +8,34 @@ const userService = require('../../services/usersService');
 // ======================
 router.get('/', auth, async (req, res) => {
     const users = await userService.getAll();
-
     res.render('users/index', { users });
+});
+
+// ======================
+// NEW FORM
+// ======================
+router.get('/new', auth, (req, res) => {
+    res.render('users/new');
+});
+
+// ======================
+// CREATE USER (FIXÉ)
+// ======================
+router.post('/new', auth, async (req, res) => {
+    try {
+        await userService.create({
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            role: req.body.role
+        });
+
+        return res.redirect('/dashboard/users');
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send("Erreur création user");
+    }
 });
 
 // ======================
@@ -27,19 +53,18 @@ router.get('/edit/:id', auth, async (req, res) => {
 });
 
 // ======================
-// UPDATE USER (💥 MANQUAIT)
+// UPDATE USER
 // ======================
 router.post('/edit/:id', auth, async (req, res) => {
     const users = await userService.getAll();
+    const index = users.findIndex(u => u._id === req.params.id);
 
-    const userIndex = users.findIndex(u => u._id === req.params.id);
-
-    if (userIndex === -1) {
-        return res.status(404).json({ message: "User introuvable" });
+    if (index === -1) {
+        return res.status(404).send("User introuvable");
     }
 
-    users[userIndex] = {
-        ...users[userIndex],
+    users[index] = {
+        ...users[index],
         name: req.body.name,
         email: req.body.email,
         role: req.body.role
