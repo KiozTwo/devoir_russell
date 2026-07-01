@@ -6,16 +6,14 @@ const CatwaySchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-
-    catwayType: {
-        type: String,
-        required: true,
-        enum: ['long', 'short']
-    },
-
-    catwayState: {
+    type: {
         type: String,
         required: true
+    },
+    catwayState: {
+        type: String,
+        required: true,
+        default: "available"
     }
 });
 

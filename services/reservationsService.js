@@ -1,15 +1,23 @@
 const Reservation = require('../models/reservation');
 
-exports.getAll = () => Reservation.find();
+module.exports = {
+    getAll: async () => {
+        return await Reservation.find().populate('catway');
+    },
 
-exports.getById = (id) => Reservation.findById(id);
+    findById: async (id) => {
+        return await Reservation.findById(id).populate('catway');
+    },
 
-exports.create = (data) => Reservation.create(data);
+    create: async (data) => {
+        return await Reservation.create(data);
+    },
 
-exports.update = (id, data) =>
-    Reservation.findByIdAndUpdate(id, data, {
-        new: true
-    });
+    update: async (id, data) => {
+        return await Reservation.findByIdAndUpdate(id, data, { new: true });
+    },
 
-exports.delete = (id) =>
-    Reservation.findByIdAndDelete(id);
+    delete: async (id) => {
+        return await Reservation.findByIdAndDelete(id);
+    }
+};

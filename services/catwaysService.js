@@ -1,16 +1,23 @@
 const Catway = require('../models/catway');
 
-exports.getAllCatways = () => Catway.find();
+module.exports = {
+    getAll: async () => {
+        return await Catway.find();
+    },
 
-exports.getCatwayById = (id) => Catway.findById(id);
+    findById: async (id) => {
+        return await Catway.findById(id);
+    },
 
-exports.createCatway = (data) => Catway.create(data);
+    create: async (data) => {
+        return await Catway.create(data);
+    },
 
-exports.updateCatway = (id, data) =>
-    Catway.findByIdAndUpdate(id, data, {
-        new: true,
-        runValidators: true
-    });
+    update: async (id, data) => {
+        return await Catway.findByIdAndUpdate(id, data, { new: true });
+    },
 
-exports.deleteCatway = (id) =>
-    Catway.findByIdAndDelete(id);
+    delete: async (id) => {
+        return await Catway.findByIdAndDelete(id);
+    }
+};

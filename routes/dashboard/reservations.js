@@ -1,55 +1,51 @@
 const express = require('express');
 const router = express.Router();
+
 const auth = require('../../middleware/auth');
 const reservationsService = require('../../services/reservationsService');
 const catwaysService = require('../../services/catwaysService');
 
 // LIST
 router.get('/', auth, async (req, res) => {
-    try {
-        const reservations = await reservationsService.getAll();
-
-        res.render('reservations/index', {
-            reservations,
-            user: req.session.user
-        });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Erreur reservations");
-    }
+    const reservations = await reservationsService.getAll();
+    res.render('reservations/index', { reservations });
 });
 
 // NEW
 router.get('/new', auth, async (req, res) => {
-    try {
-        const catways = await catwaysService.getAllCatways();
-
-        res.render('reservations/new', {
-            catways
-        });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Erreur new reservation");
-    }
+    const catways = await catwaysService.getAll();
+    res.render('reservations/new', { catways });
 });
 
-// EDIT
+// CREATE
+router.post('/new', auth, async (req, res) => {
+    await reservationsService.create(req.body);
+    res.redirect('/dashboard/reservations');
+});
+
+// EDIT PAGE
 router.get('/edit/:id', auth, async (req, res) => {
-    try {
-        const reservation = await reservationsService.getById(req.params.id);
-        const catways = await catwaysService.getAllCatways();
+    const reservation = await reservationsService.findById(req.params.id);
+    const catways = await catwaysService.getAll();
 
-        res.render('reservations/edit', {
-            reservation,
-            catways
-        });
+    if (!reservation) return res.status(404).send("Reservation introuvable");
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Erreur edit reservation");
-    }
+    res.render('reservations/edit', {
+        reservation,
+        catways
+    });
+});
+
+// UPDATE
+router.post('/edit/:id', auth, async (req, res) => {
+    await reservationsService.update(req.params.id, req.body);
+    res.redirect('/dashboard/reservations');
+});
+
+// DELETE
+router.post('/delete/:id', auth, async (req, res) => {
+    await reservationsService.delete(req.params.id);
+    res.redirect('/dashboard/reservations');
 });
 
 module.exports = router;
