@@ -1,11 +1,17 @@
-const User = require('../models/user'); // si tu as un model mongoose
+let users = [];
 
 module.exports = {
     getAll: async () => {
-        return await User.find();
+        return users;
     },
 
     create: async (data) => {
-        return await User.create(data);
+        const newUser = {
+            _id: Date.now().toString(),
+            ...data
+        };
+
+        users.push(newUser);
+        return newUser;
     }
 };
