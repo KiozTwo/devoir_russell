@@ -9,27 +9,34 @@ router.get('/', auth, async (req, res) => {
         const catways = await catwaysService.getAllCatways();
 
         res.render('catways/index', {
-            user: req.session.user,
-            catways
+            catways,
+            user: req.session.user
         });
+
     } catch (err) {
         console.error(err);
-        res.status(500).send(err.message);
+        res.status(500).send("Erreur catways");
     }
 });
 
-// NEW FORM
+// NEW
 router.get('/new', auth, (req, res) => {
     res.render('catways/new');
 });
 
-// EDIT FORM
+// EDIT
 router.get('/edit/:id', auth, async (req, res) => {
-    const catway = await catwaysService.getById(req.params.id);
+    try {
+        const catway = await catwaysService.getById(req.params.id);
 
-    res.render('catways/edit', {
-        catway
-    });
+        res.render('catways/edit', {
+            catway
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur catway edit");
+    }
 });
 
 module.exports = router;

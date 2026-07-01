@@ -19,20 +19,28 @@
             <th>Actions</th>
         </tr>
 
-        <% users.forEach(user=> { %>
-            <tr>
-                <td><%= user.name %></td>
-                <td><%= user.email %></td>
-                <td><%= user.role %></td>
-                <td>
-                    <a href="/dashboard/users/edit/<%= user._id %>">Modifier</a>
+        <% if (users && users.length > 0) { %>
+            <% users.forEach(user => { %>
+                <tr>
+                    <td><%= user.name %></td>
+                    <td><%= user.email %></td>
+                    <td><%= user.role %></td>
+                    <td>
+                        <a href="/dashboard/users/edit/<%= user._id %>">Modifier</a>
 
-                    <form action="/dashboard/users/delete/<%= user._id %>" method="POST" style="display:inline;">
-                        <button>Supprimer</button>
-                    </form>
+                        <form action="/dashboard/users/delete/<%= user._id %>" method="POST" style="display:inline;">
+                            <button type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        <% } else { %>
+            <tr>
+                <td colspan="4" style="text-align:center;">
+                    Aucun utilisateur trouvé
                 </td>
             </tr>
-        <% }) %>
+        <% } %>
 
     </table>
 
