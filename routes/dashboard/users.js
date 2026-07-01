@@ -1,24 +1,25 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const auth = require('../../middleware/auth');
-const usersService = require('../../services/usersService');
 
-router.get('/', auth, async (req, res) => {
-    try {
-        console.log("SESSION :", req.session.user);
+// TEST ROUTE 👇
+router.get('/test', (req, res) => {
+    res.send("USERS ROUTER OK");
+});
 
-        const users = await usersService.getAllUsers();
+// LIST
+router.get('/', auth, (req, res) => {
+    res.render('users/list');
+});
 
-        console.log("USERS :", users);
+// NEW
+router.get('/new', auth, (req, res) => {
+    res.render('users/new');
+});
 
-        res.render('users/index', {
-            user: req.session.user,
-            users
-        });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).send(`<pre>${err.stack}</pre>`);
-    }
+// EDIT
+router.get('/edit/:id', auth, (req, res) => {
+    res.render('users/edit');
 });
 
 module.exports = router;

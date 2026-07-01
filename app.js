@@ -22,7 +22,6 @@ const reservationDashboardRoutes = require('./routes/dashboard/reservations');
 const usersDashboardRoutes = require('./routes/dashboard/users');
 
 const auth = require('./middleware/auth');
-
 const reservationService = require('./services/reservationsService');
 
 // ======================
@@ -32,74 +31,64 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // ======================
-// GLOBAL MIDDLEWARES
+// MIDDLEWARES
 // ======================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-app.set('trust proxy', 1); // ⭐ IMPORTANT POUR RENDER
+app.set('trust proxy', 1);
 
+// SESSION (VERSION SIMPLE + STABLE)
 app.use(session({
     secret: process.env.JWT_SECRET || 'secret',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // ⭐ Render = true
+        secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ======================
-// DEBUG MIDDLEWARE
-// ======================
+// DEBUG SIMPLE
 app.use((req, res, next) => {
     console.log(`➡️ ${req.method} ${req.url}`);
     next();
 });
 
 // ======================
-// AUTH API
+// ROUTES PUBLIQUES
 // ======================
 app.use('/auth', authRoutes);
 
-// ======================
-// HOME (LOGIN PAGE)
-// ======================
 app.get('/', (req, res) => {
     res.render('login');
 });
 
 // ======================
-// DASHBOARD PAGE
+// DASHBOARD
 // ======================
 app.get('/dashboard', auth, async (req, res) => {
-    try {
-        const reservations = await reservationService.getAll();
+    const reservations = await reservationService.getAll();
 
-        res.render('dashboard', {
-            user: req.session.user,
-            today: new Date(),
-            reservations
-        });
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Erreur dashboard");
-    }
+    res.render('dashboard', {
+        user: req.session.user,
+        today: new Date(),
+        reservations
+    });
 });
 
 // ======================
 // DASHBOARD MODULES
 // ======================
+app.use('/dashboard/users', auth, usersDashboardRoutes);
 app.use('/dashboard/catways', auth, catwaysDashboardRoutes);
 app.use('/dashboard/reservations', auth, reservationDashboardRoutes);
-app.use('/dashboard/users', auth, usersDashboardRoutes);
 
 // ======================
-// API PROTECTED
+// API (PROTÉGÉE)
 // ======================
 app.use('/api/users', auth, userApiRoutes);
 app.use('/api/catways', auth, catwaysApiRoutes);
@@ -111,14 +100,14 @@ app.use('/api/reservations', auth, reservationApiRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ======================
-// TEST ROUTES
+// TEST
 // ======================
 app.get('/test', (req, res) => {
     res.json({ message: "Server OK" });
 });
 
 // ======================
-// 404 (LAST)
+// 404 (IMPORTANT)
 // ======================
 app.use((req, res) => {
     res.status(404).json({
