@@ -6,14 +6,15 @@ const { validationResult } = require('express-validator');
 // ======================
 exports.getCatways = async (req, res) => {
     try {
-        const data = await catwaysService.getAllCatways();
-        return res.json(data);
+        const data = await catwaysService.getAll();
+
+        return res.status(200).json(data);
 
     } catch (error) {
-        console.error(error);
+        console.error("Erreur getCatways :", error);
 
         return res.status(500).json({
-            message: "Erreur serveur"
+            message: "Erreur lors de la récupération des catways"
         });
     }
 };
@@ -23,7 +24,7 @@ exports.getCatways = async (req, res) => {
 // ======================
 exports.getCatwayById = async (req, res) => {
     try {
-        const data = await catwaysService.getCatwayById(req.params.id);
+        const data = await catwaysService.findById(req.params.id);
 
         if (!data) {
             return res.status(404).json({
@@ -31,13 +32,13 @@ exports.getCatwayById = async (req, res) => {
             });
         }
 
-        return res.json(data);
+        return res.status(200).json(data);
 
     } catch (error) {
-        console.error(error);
+        console.error("Erreur getCatwayById :", error);
 
         return res.status(500).json({
-            message: "Erreur serveur"
+            message: "Erreur lors de la récupération du catway"
         });
     }
 };
@@ -56,7 +57,7 @@ exports.createCatway = async (req, res) => {
             });
         }
 
-        const data = await catwaysService.createCatway(req.body);
+        const data = await catwaysService.create(req.body);
 
         return res.status(201).json({
             message: "Catway créé avec succès",
@@ -64,10 +65,16 @@ exports.createCatway = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("Erreur createCatway :", error);
+
+        if (error.code === 11000) {
+            return res.status(409).json({
+                message: "Un catway avec ce numéro existe déjà"
+            });
+        }
 
         return res.status(500).json({
-            message: "Erreur serveur"
+            message: "Erreur lors de la création du catway"
         });
     }
 };
@@ -77,7 +84,18 @@ exports.createCatway = async (req, res) => {
 // ======================
 exports.updateCatway = async (req, res) => {
     try {
-        const data = await catwaysService.updateCatway(req.params.id, req.body);
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                message: "Validation échouée",
+                errors: errors.array()
+            });
+        }
+
+        const data = await catwaysService.update(req.params.id, {
+            catwayState: req.body.catwayState
+        });
 
         if (!data) {
             return res.status(404).json({
@@ -85,16 +103,16 @@ exports.updateCatway = async (req, res) => {
             });
         }
 
-        return res.json({
-            message: "Catway modifié avec succès",
+        return res.status(200).json({
+            message: "État du catway modifié avec succès",
             data
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("Erreur updateCatway :", error);
 
         return res.status(500).json({
-            message: "Erreur serveur"
+            message: "Erreur lors de la modification du catway"
         });
     }
 };
@@ -104,7 +122,7 @@ exports.updateCatway = async (req, res) => {
 // ======================
 exports.deleteCatway = async (req, res) => {
     try {
-        const deleted = await catwaysService.deleteCatway(req.params.id);
+        const deleted = await catwaysService.delete(req.params.id);
 
         if (!deleted) {
             return res.status(404).json({
@@ -117,10 +135,10 @@ exports.deleteCatway = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("Erreur deleteCatway :", error);
 
         return res.status(500).json({
-            message: "Erreur serveur"
+            message: "Erreur lors de la suppression du catway"
         });
     }
 };

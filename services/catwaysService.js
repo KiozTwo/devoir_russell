@@ -10,11 +10,24 @@ module.exports = {
     },
 
     create: async (data) => {
-        return await Catway.create(data);
+        return await Catway.create({
+            catwayNumber: data.catwayNumber,
+            catwayType: data.catwayType,
+            catwayState: data.catwayState
+        });
     },
 
     update: async (id, data) => {
-        return await Catway.findByIdAndUpdate(id, data, { new: true });
+        return await Catway.findByIdAndUpdate(
+            id,
+            {
+                catwayState: data.catwayState
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
     },
 
     delete: async (id) => {

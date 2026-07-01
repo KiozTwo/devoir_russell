@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
+    <meta charset="UTF-8">
     <title>Catways</title>
 </head>
 
 <body>
 
-    <h1>Gestion des Catways</h1>
+    <h1>Gestion des catways</h1>
 
     <a href="/dashboard/catways/new">➕ Ajouter</a>
 
@@ -19,16 +20,16 @@
             <th>Actions</th>
         </tr>
 
-        <% catways.forEach(catway=> { %>
+        <% catways.forEach(catway => { %>
             <tr>
                 <td><%= catway.catwayNumber %></td>
-                <td><%= catway.type %></td>
+                <td><%= catway.catwayType %></td>
                 <td><%= catway.catwayState %></td>
                 <td>
                     <a href="/dashboard/catways/edit/<%= catway._id %>">Modifier</a>
 
                     <form action="/dashboard/catways/delete/<%= catway._id %>" method="POST" style="display:inline;">
-                        <button>Supprimer</button>
+                        <button type="submit">Supprimer</button>
                     </form>
                 </td>
             </tr>

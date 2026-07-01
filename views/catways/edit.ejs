@@ -1,21 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
-    <title>Edit Catway</title>
+    <meta charset="UTF-8">
+    <title>Modifier un catway</title>
 </head>
 
 <body>
 
-    <h1>Modifier Catway</h1>
+    <h1>Modifier l'état du catway</h1>
+
+    <p>
+        <strong>Numéro :</strong> <%= catway.catwayNumber %>
+    </p>
+
+    <p>
+        <strong>Type :</strong> <%= catway.catwayType %>
+    </p>
 
     <form action="/dashboard/catways/edit/<%= catway._id %>" method="POST">
 
-        <input name="catwayNumber" value="<%= catway.catwayNumber %>"><br><br>
-        <input name="type" value="<%= catway.type %>"><br><br>
-        <input name="catwayState" value="<%= catway.catwayState %>"><br><br>
+        <label for="catwayState">État du catway</label><br>
 
-        <button>Modifier</button>
+        <textarea
+            id="catwayState"
+            name="catwayState"
+            rows="4"
+            cols="40"
+            required><%= catway.catwayState %></textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Modifier l'état
+        </button>
 
     </form>
 

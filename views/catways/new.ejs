@@ -1,21 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
-    <title>Créer Catway</title>
+    <meta charset="UTF-8">
+    <title>Créer un catway</title>
 </head>
 
 <body>
 
-    <h1>Créer Catway</h1>
+    <h1>Créer un catway</h1>
 
     <form action="/dashboard/catways/new" method="POST">
 
-        <input name="catwayNumber" placeholder="Numéro"><br><br>
-        <input name="type" placeholder="Type"><br><br>
-        <input name="catwayState" placeholder="État"><br><br>
+        <label for="catwayNumber">Numéro</label><br>
+        <input
+            type="number"
+            id="catwayNumber"
+            name="catwayNumber"
+            required>
+        <br><br>
 
-        <button>Créer</button>
+        <label for="catwayType">Type</label><br>
+
+        <select
+            id="catwayType"
+            name="catwayType"
+            required>
+
+            <option value="">-- Sélectionner --</option>
+            <option value="long">Long</option>
+            <option value="short">Short</option>
+
+        </select>
+
+        <br><br>
+
+        <label for="catwayState">État</label><br>
+
+        <textarea
+            id="catwayState"
+            name="catwayState"
+            rows="4"
+            cols="40"
+            required></textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Créer
+        </button>
 
     </form>
 
