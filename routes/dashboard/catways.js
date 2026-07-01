@@ -17,17 +17,24 @@ router.get('/new', auth, (req, res) => {
 // CREATE ⭐⭐⭐ IMPORTANT
 router.post('/new', auth, async (req, res) => {
     try {
-        await catwaysService.create({
-            catwayNumber: req.body.catwayNumber,
+        console.log("BODY :", req.body);
+
+        const catway = await catwaysService.create({
+            catwayNumber: Number(req.body.catwayNumber),
             type: req.body.type,
             catwayState: req.body.catwayState
         });
 
+        console.log("CATWAY CREATED :", catway);
+
         return res.redirect('/dashboard/catways');
 
     } catch (err) {
+        console.error("========== ERREUR CATWAY ==========");
         console.error(err);
-        return res.status(500).send("Erreur création catway");
+        console.error("===================================");
+
+        return res.status(500).send(err.message);
     }
 });
 
