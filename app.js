@@ -38,12 +38,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
+app.set('trust proxy', 1); // ⭐ IMPORTANT POUR RENDER
+
 app.use(session({
     secret: process.env.JWT_SECRET || 'secret',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false
+        secure: process.env.NODE_ENV === 'production', // ⭐ Render = true
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
 }));
 
@@ -61,6 +64,7 @@ app.use((req, res, next) => {
 // AUTH API
 // ======================
 app.use('/auth', authRoutes);
+
 // ======================
 // HOME (LOGIN PAGE)
 // ======================
