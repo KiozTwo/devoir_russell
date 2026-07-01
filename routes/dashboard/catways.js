@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-
 const auth = require('../../middleware/auth');
 const catwaysService = require('../../services/catwaysService');
 
@@ -10,36 +9,26 @@ router.get('/', auth, async (req, res) => {
     res.render('catways/index', { catways });
 });
 
-// NEW
-router.get('/new', (req, res) => {
+// FORM
+router.get('/new', auth, (req, res) => {
     res.render('catways/new');
 });
 
-// CREATE
+// CREATE ⭐⭐⭐ IMPORTANT
 router.post('/new', auth, async (req, res) => {
-    await catwaysService.create(req.body);
-    res.redirect('/dashboard/catways');
-});
+    try {
+        await catwaysService.create({
+            catwayNumber: req.body.catwayNumber,
+            type: req.body.type,
+            catwayState: req.body.catwayState
+        });
 
-// EDIT PAGE
-router.get('/edit/:id', auth, async (req, res) => {
-    const catway = await catwaysService.findById(req.params.id);
+        return res.redirect('/dashboard/catways');
 
-    if (!catway) return res.status(404).send("Catway introuvable");
-
-    res.render('catways/edit', { catway });
-});
-
-// UPDATE
-router.post('/edit/:id', auth, async (req, res) => {
-    await catwaysService.update(req.params.id, req.body);
-    res.redirect('/dashboard/catways');
-});
-
-// DELETE
-router.post('/delete/:id', auth, async (req, res) => {
-    await catwaysService.delete(req.params.id);
-    res.redirect('/dashboard/catways');
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send("Erreur création catway");
+    }
 });
 
 module.exports = router;
