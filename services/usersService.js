@@ -1,17 +1,18 @@
 let users = [];
 
 module.exports = {
-    getAll: async () => {
-        return users;
-    },
+    getAll: async () => users,
 
     create: async (data) => {
-        const newUser = {
+        const user = {
             _id: Date.now().toString(),
             ...data
         };
+        users.push(user);
+        return user;
+    },
 
-        users.push(newUser);
-        return newUser;
+    findByEmail: async (email) => {
+        return users.find(u => u.email === email);
     }
 };

@@ -1,43 +1,3 @@
-const bcrypt = require('bcryptjs');
-const { validationResult } = require('express-validator');
-const userService = require('../../services/usersService');
-
-// ======================
-// REGISTER
-// ======================
-exports.register = async (req, res) => {
-    try {
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                message: "Validation error",
-                errors: errors.array()
-            });
-        }
-
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-        const user = await userService.create({
-            email: req.body.email,
-            password: hashedPassword,
-            role: req.body.role || 'user'
-        });
-
-        return res.status(201).json({
-            message: "Utilisateur créé",
-            user
-        });
-
-    } catch (error) {
-        console.error("REGISTER ERROR:", error);
-        return res.status(500).json({ message: "Erreur serveur register" });
-    }
-};
-
-// ======================
-// LOGIN (SAFE VERSION)
-// ======================
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -46,7 +6,12 @@ exports.login = async (req, res) => {
             return res.status(400).send("Email et mot de passe requis");
         }
 
+        // 🔍 DEBUG IMPORTANT
+        console.log("LOGIN ATTEMPT:", email);
+
         const user = await userService.findByEmail(email);
+
+        console.log("USER FOUND:", user);
 
         if (!user) {
             return res.status(401).send("Utilisateur introuvable");
@@ -58,11 +23,12 @@ exports.login = async (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password);
 
+        console.log("PASSWORD MATCH:", isMatch);
+
         if (!isMatch) {
             return res.status(401).send("Mot de passe incorrect");
         }
 
-        // SESSION LOGIN
         req.session.user = {
             id: user._id,
             email: user.email,
@@ -74,19 +40,7 @@ exports.login = async (req, res) => {
         return res.redirect('/dashboard');
 
     } catch (error) {
-        console.error("LOGIN ERROR:", error);
+        console.error("🔥 LOGIN ERROR FULL STACK:", error);
         return res.status(500).send("Erreur serveur login");
     }
-};
-
-// ======================
-// LOGOUT
-// ======================
-exports.logout = (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error("LOGOUT ERROR:", err);
-        }
-        res.redirect('/');
-    });
 };
