@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 
 const ReservationSchema = new mongoose.Schema({
-
-    catwayNumber: {
-        type: Number,
-        required: true
-    },
-
     clientName: {
         type: String,
         required: true,
@@ -19,6 +13,12 @@ const ReservationSchema = new mongoose.Schema({
         trim: true
     },
 
+    catway: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Catway',
+        required: true
+    },
+
     startDate: {
         type: Date,
         required: true
@@ -26,15 +26,8 @@ const ReservationSchema = new mongoose.Schema({
 
     endDate: {
         type: Date,
-        required: true,
-        validate: {
-            validator: function (value) {
-                return value > this.startDate;
-            },
-            message: 'La date de fin doit être postérieure à la date de début'
-        }
+        required: true
     }
-
 }, {
     timestamps: true
 });
