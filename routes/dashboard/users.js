@@ -1,29 +1,39 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
+const userService = require('../../services/usersService');
 
-// LIST USERS
-router.get('/', auth, (req, res) => {
+// LIST
+router.get('/', auth, async (req, res) => {
     try {
+        const users = await userService.getAll();
+
         res.render('users/index', {
-            users: [] // temporaire pour éviter crash
+            users
         });
+
     } catch (err) {
         console.error(err);
-        res.status(500).send("Erreur users dashboard");
+        res.status(500).send("Erreur users");
     }
 });
 
-// NEW USER FORM
+// FORM CREATE
 router.get('/new', auth, (req, res) => {
     res.render('users/new');
 });
 
-// EDIT USER FORM
-router.get('/edit/:id', auth, (req, res) => {
-    res.render('users/edit', {
-        user: { _id: req.params.id } // temporaire safe
-    });
+// CREATE USER
+router.post('/new', auth, async (req, res) => {
+    try {
+        await userService.create(req.body);
+
+        return res.redirect('/dashboard/users');
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Erreur création user" });
+    }
 });
 
 module.exports = router;
