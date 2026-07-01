@@ -15,7 +15,7 @@ router.get('/', auth, async (req, res) => {
             users
         });
 
-  } catch (err) {
+    } catch (err) {
         console.error(err);
         res.status(500).send(`<pre>${err.stack}</pre>`);
     }

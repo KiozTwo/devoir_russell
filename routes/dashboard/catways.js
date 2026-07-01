@@ -1,18 +1,14 @@
 const router = require('express').Router();
 const auth = require('../../middleware/auth');
-const usersService = require('../../services/usersService');
+const catwaysService = require('../../services/catwaysService');
 
 router.get('/', auth, async (req, res) => {
     try {
-        console.log("SESSION :", req.session.user);
+        const catways = await catwaysService.getAllCatways();
 
-        const users = await usersService.getAllUsers();
-
-        console.log("USERS :", users);
-
-        res.render('users/index', {
+        res.render('catways/index', {
             user: req.session.user,
-            users
+            catways
         });
 
     } catch (err) {

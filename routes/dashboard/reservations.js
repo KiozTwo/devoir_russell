@@ -1,21 +1,16 @@
 const router = require('express').Router();
 const auth = require('../../middleware/auth');
-const usersService = require('../../services/usersService');
+const reservationsService = require('../../services/reservationsService');
 
 router.get('/', auth, async (req, res) => {
     try {
-        console.log("SESSION :", req.session.user);
+        const reservations = await reservationsService.getAll();
 
-        const users = await usersService.getAllUsers();
-
-        console.log("USERS :", users);
-
-        res.render('users/index', {
+        res.render('reservations/index', {
             user: req.session.user,
-            users
+            reservations
         });
-
-  } catch (err) {
+    } catch (err) {
         console.error(err);
         res.status(500).send(`<pre>${err.stack}</pre>`);
     }
