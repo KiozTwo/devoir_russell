@@ -1,4 +1,4 @@
-const User = require('../models/User'); // si tu as un model mongoose
+const User = require('../models/user'); // si tu as un model mongoose
 
 module.exports = {
     getAll: async () => {
