@@ -11,7 +11,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // NEW
-router.get('/new', auth, (req, res) => {
+router.get('/new', (req, res) => {
     res.render('catways/new');
 });
 
