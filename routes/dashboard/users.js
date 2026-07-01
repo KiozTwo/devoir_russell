@@ -9,7 +9,7 @@ router.get('/test', (req, res) => {
 
 // LIST
 router.get('/', auth, (req, res) => {
-    res.render('users/list');
+    res.render('users/index');
 });
 
 // NEW
