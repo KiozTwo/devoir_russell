@@ -9,17 +9,17 @@
 
     <h1>Modifier réservation</h1>
 
-    <form action="/reservations/edit/<%= reservation._id %>" method="POST">
+    <form action="/dashboard/reservations/edit/<%= reservation._id %>" method="POST">
 
         <input name="clientName" value="<%= reservation.clientName %>"><br><br>
         <input name="boatName" value="<%= reservation.boatName %>"><br><br>
 
         <select name="catway">
             <% catways.forEach(c=> { %>
-                <option value="<%= c._id %>" <%=reservation.catway==c._id ? 'selected' : '' %>>
+                <option value="<%= c._id %>" <%= reservation.catway==c._id ? 'selected' : '' %>>
                     <%= c.catwayNumber %>
                 </option>
-                <% }) %>
+            <% }) %>
         </select>
 
         <br><br>

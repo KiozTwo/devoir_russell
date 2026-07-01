@@ -9,7 +9,7 @@
 
     <h1>Gestion des Catways</h1>
 
-    <a href="/catways/new">➕ Ajouter</a>
+    <a href="/dashboard/catways/new">➕ Ajouter</a>
 
     <table border="1" width="100%">
         <tr>
@@ -21,24 +21,18 @@
 
         <% catways.forEach(catway=> { %>
             <tr>
+                <td><%= catway.catwayNumber %></td>
+                <td><%= catway.type %></td>
+                <td><%= catway.catwayState %></td>
                 <td>
-                    <%= catway.catwayNumber %>
-                </td>
-                <td>
-                    <%= catway.type %>
-                </td>
-                <td>
-                    <%= catway.catwayState %>
-                </td>
-                <td>
-                    <a href="/catways/edit/<%= catway._id %>">Modifier</a>
+                    <a href="/dashboard/catways/edit/<%= catway._id %>">Modifier</a>
 
-                    <form action="/catways/delete/<%= catway._id %>" method="POST" style="display:inline;">
+                    <form action="/dashboard/catways/delete/<%= catway._id %>" method="POST" style="display:inline;">
                         <button>Supprimer</button>
                     </form>
                 </td>
             </tr>
-            <% }) %>
+        <% }) %>
 
     </table>
 

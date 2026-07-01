@@ -9,7 +9,7 @@
 
     <h1>Créer réservation</h1>
 
-    <form action="/reservations/new" method="POST">
+    <form action="/dashboard/reservations/new" method="POST">
 
         <input name="clientName" placeholder="Client"><br><br>
         <input name="boatName" placeholder="Bateau"><br><br>
@@ -19,7 +19,7 @@
                 <option value="<%= c._id %>">
                     <%= c.catwayNumber %>
                 </option>
-                <% }) %>
+            <% }) %>
         </select>
 
         <br><br>

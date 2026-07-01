@@ -9,7 +9,7 @@
 
     <h1>Gestion des utilisateurs</h1>
 
-    <a href="/users/new">➕ Ajouter</a>
+    <a href="/dashboard/users/new">➕ Ajouter</a>
 
     <table border="1" width="100%">
         <tr>
@@ -21,24 +21,19 @@
 
         <% users.forEach(user=> { %>
             <tr>
+                <td><%= user.name %></td>
+                <td><%= user.email %></td>
+                <td><%= user.role %></td>
                 <td>
-                    <%= user.name %>
-                </td>
-                <td>
-                    <%= user.email %>
-                </td>
-                <td>
-                    <%= user.role %>
-                </td>
-                <td>
-                    <a href="/users/edit/<%= user._id %>">Modifier</a>
+                    <a href="/dashboard/users/edit/<%= user._id %>">Modifier</a>
 
-                    <form action="/users/delete/<%= user._id %>" method="POST" style="display:inline;">
+                    <form action="/dashboard/users/delete/<%= user._id %>" method="POST" style="display:inline;">
                         <button>Supprimer</button>
                     </form>
                 </td>
             </tr>
-            <% }) %>
+        <% }) %>
+
     </table>
 
 </body>
