@@ -6,6 +6,8 @@ const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
 const app = express();
 
 // ======================
@@ -39,20 +41,23 @@ app.use(methodOverride('_method'));
 
 app.set('trust proxy', 1);
 
-// SESSION (VERSION SIMPLE + STABLE)
+// ======================
+// SESSION FIXED
+// ======================
 app.use(session({
     secret: process.env.JWT_SECRET || 'secret',
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+        secure: true,
+        sameSite: 'none'
     }
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// DEBUG SIMPLE
+// DEBUG
 app.use((req, res, next) => {
     console.log(`➡️ ${req.method} ${req.url}`);
     next();
@@ -81,14 +86,14 @@ app.get('/dashboard', auth, async (req, res) => {
 });
 
 // ======================
-// DASHBOARD MODULES
+// MODULES
 // ======================
 app.use('/dashboard/users', auth, usersDashboardRoutes);
 app.use('/dashboard/catways', auth, catwaysDashboardRoutes);
 app.use('/dashboard/reservations', auth, reservationDashboardRoutes);
 
 // ======================
-// API (PROTÉGÉE)
+// API
 // ======================
 app.use('/api/users', auth, userApiRoutes);
 app.use('/api/catways', auth, catwaysApiRoutes);
@@ -107,7 +112,7 @@ app.get('/test', (req, res) => {
 });
 
 // ======================
-// 404 (IMPORTANT)
+// 404
 // ======================
 app.use((req, res) => {
     res.status(404).json({
