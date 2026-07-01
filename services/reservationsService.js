@@ -10,11 +10,30 @@ module.exports = {
     },
 
     create: async (data) => {
-        return await Reservation.create(data);
+        return await Reservation.create({
+            clientName: data.clientName,
+            boatName: data.boatName,
+            catway: data.catway,
+            startDate: data.startDate,
+            endDate: data.endDate
+        });
     },
 
     update: async (id, data) => {
-        return await Reservation.findByIdAndUpdate(id, data, { new: true });
+        return await Reservation.findByIdAndUpdate(
+            id,
+            {
+                clientName: data.clientName,
+                boatName: data.boatName,
+                catway: data.catway,
+                startDate: data.startDate,
+                endDate: data.endDate
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
     },
 
     delete: async (id) => {
