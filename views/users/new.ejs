@@ -1,28 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
-    <title>Créer user</title>
+    <meta charset="UTF-8">
+    <title>Créer un utilisateur</title>
 </head>
 
 <body>
 
-    <h1>Créer utilisateur</h1>
+    <h1>Créer un utilisateur</h1>
 
     <form action="/dashboard/users/new" method="POST">
 
-        <input name="name" placeholder="Nom"><br><br>
-        <input name="email" placeholder="Email"><br><br>
-        <input name="password" type="password" placeholder="Password"><br><br>
+        <label for="username">Nom d'utilisateur</label><br>
+        <input id="username" name="username" type="text" required>
+        <br><br>
 
-        <select name="role">
+        <label for="email">Email</label><br>
+        <input id="email" name="email" type="email" required>
+        <br><br>
+
+        <label for="password">Mot de passe</label><br>
+        <input id="password" name="password" type="password" minlength="6" required>
+        <br><br>
+
+        <label for="role">Rôle</label><br>
+        <select id="role" name="role" required>
             <option value="user">User</option>
             <option value="admin">Admin</option>
         </select>
 
         <br><br>
 
-        <button>Créer</button>
+        <button type="submit">Créer</button>
 
     </form>
 
