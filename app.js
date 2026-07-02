@@ -23,6 +23,7 @@ const usersDashboardRoutes = require('./routes/dashboard/users');
 
 const auth = require('./middleware/auth');
 const reservationService = require('./services/reservationsService');
+const authController = require('./controllers/api/authController');
 
 // ======================
 // VIEW ENGINE
@@ -41,7 +42,7 @@ app.use(methodOverride('_method'));
 app.set('trust proxy', 1);
 
 // ======================
-// SESSION (PRODUCTION SAFE)
+// SESSION
 // ======================
 app.use(session({
     secret: process.env.JWT_SECRET || 'secret',
@@ -70,6 +71,10 @@ app.use((req, res, next) => {
 // AUTH ROUTES
 // ======================
 app.use('/auth', authRoutes);
+
+// Routes demandées dans l'énoncé
+app.post('/login', authController.login);
+app.get('/logout', authController.logout);
 
 // HOME
 app.get('/', (req, res) => {
@@ -103,7 +108,7 @@ app.use('/dashboard/catways', auth, catwaysDashboardRoutes);
 app.use('/dashboard/reservations', auth, reservationDashboardRoutes);
 
 // ======================
-// API (PROTÉGÉE)
+// API PROTÉGÉE
 // ======================
 app.use('/api/users', auth, userApiRoutes);
 app.use('/api/catways', auth, catwaysApiRoutes);
