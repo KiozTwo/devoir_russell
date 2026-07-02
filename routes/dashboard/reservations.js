@@ -5,6 +5,13 @@ const auth = require('../../middleware/auth');
 const reservationsService = require('../../services/reservationsService');
 const catwaysService = require('../../services/catwaysService');
 
+const {
+    createReservationValidator,
+    updateReservationValidator
+} = require('../../validators/reservationValidator');
+
+const { validationResult } = require('express-validator');
+
 // ======================
 // LIST
 // ======================
@@ -42,12 +49,21 @@ router.get('/new', auth, async (req, res) => {
 // ======================
 // CREATE
 // ======================
-router.post('/new', auth, async (req, res) => {
+router.post('/new', auth, createReservationValidator, async (req, res) => {
     try {
+        const errors = validationResult(req);
 
-        console.log("BODY :", req.body);
+        if (!errors.isEmpty()) {
+            const catways = await catwaysService.getAll();
 
-        const reservation = await reservationsService.create({
+            return res.status(400).render('reservations/new', {
+                catways,
+                errors: errors.array(),
+                old: req.body
+            });
+        }
+
+        await reservationsService.create({
             clientName: req.body.clientName,
             boatName: req.body.boatName,
             catway: req.body.catway,
@@ -55,17 +71,11 @@ router.post('/new', auth, async (req, res) => {
             endDate: req.body.endDate
         });
 
-        console.log("RESERVATION CREATED :", reservation);
-
         res.redirect('/dashboard/reservations');
 
     } catch (err) {
-
-        console.error("========== ERREUR RESERVATION ==========");
-        console.error(err);
-        console.error("========================================");
-
-        res.status(500).send(err.message);
+        console.error("Erreur création réservation :", err);
+        res.status(500).send("Erreur lors de la création de la réservation");
     }
 });
 
@@ -74,7 +84,6 @@ router.post('/new', auth, async (req, res) => {
 // ======================
 router.get('/edit/:id', auth, async (req, res) => {
     try {
-
         const reservation = await reservationsService.findById(req.params.id);
         const catways = await catwaysService.getAll();
 
@@ -96,8 +105,21 @@ router.get('/edit/:id', auth, async (req, res) => {
 // ======================
 // UPDATE
 // ======================
-router.post('/edit/:id', auth, async (req, res) => {
+router.post('/edit/:id', auth, updateReservationValidator, async (req, res) => {
     try {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            const reservation = await reservationsService.findById(req.params.id);
+            const catways = await catwaysService.getAll();
+
+            return res.status(400).render('reservations/edit', {
+                reservation,
+                catways,
+                errors: errors.array(),
+                old: req.body
+            });
+        }
 
         await reservationsService.update(req.params.id, {
             clientName: req.body.clientName,
@@ -110,8 +132,8 @@ router.post('/edit/:id', auth, async (req, res) => {
         res.redirect('/dashboard/reservations');
 
     } catch (err) {
-        console.error(err);
-        res.status(500).send(err.message);
+        console.error("Erreur modification réservation :", err);
+        res.status(500).send("Erreur lors de la modification de la réservation");
     }
 });
 
@@ -120,14 +142,13 @@ router.post('/edit/:id', auth, async (req, res) => {
 // ======================
 router.post('/delete/:id', auth, async (req, res) => {
     try {
-
         await reservationsService.delete(req.params.id);
 
         res.redirect('/dashboard/reservations');
 
     } catch (err) {
-        console.error(err);
-        res.status(500).send(err.message);
+        console.error("Erreur suppression réservation :", err);
+        res.status(500).send("Erreur lors de la suppression de la réservation");
     }
 });
 
