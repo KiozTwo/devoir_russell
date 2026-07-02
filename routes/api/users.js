@@ -2,10 +2,33 @@ const router = require('express').Router();
 
 const userController = require('../../controllers/api/userController');
 
-// GET all users
+const {
+    registerValidator
+} = require('../../validators/userValidator');
+
+// ======================
+// GET ALL USERS
+// ======================
 router.get('/', userController.getUsers);
 
-// GET user by id
+// ======================
+// GET USER BY ID
+// ======================
 router.get('/:id', userController.getUserById);
+
+// ======================
+// CREATE USER
+// ======================
+router.post('/', registerValidator, userController.createUser);
+
+// ======================
+// UPDATE USER
+// ======================
+router.put('/:id', userController.updateUser);
+
+// ======================
+// DELETE USER
+// ======================
+router.delete('/:id', userController.deleteUser);
 
 module.exports = router;

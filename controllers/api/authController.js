@@ -11,7 +11,7 @@ exports.register = async (req, res) => {
 
         if (!errors.isEmpty()) {
             return res.status(400).json({
-                message: "Validation error",
+                message: "Validation échouée",
                 errors: errors.array()
             });
         }
@@ -19,6 +19,7 @@ exports.register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         const user = await userService.create({
+            username: req.body.username,
             email: req.body.email,
             password: hashedPassword,
             role: req.body.role || 'user'
@@ -31,12 +32,21 @@ exports.register = async (req, res) => {
 
     } catch (error) {
         console.error("REGISTER ERROR:", error);
-        return res.status(500).send("Erreur serveur register");
+
+        if (error.code === 11000) {
+            return res.status(409).json({
+                message: "Cette adresse email est déjà utilisée"
+            });
+        }
+
+        return res.status(500).json({
+            message: "Erreur lors de la création de l'utilisateur"
+        });
     }
 };
 
 // ======================
-// LOGIN (VERSION ULTRA SAFE)
+// LOGIN
 // ======================
 exports.login = async (req, res) => {
     try {
@@ -46,24 +56,10 @@ exports.login = async (req, res) => {
             return res.status(400).send("Email et mot de passe requis");
         }
 
-        console.log("LOGIN ATTEMPT:", email);
-
-        // 🔥 SAFE CHECK (évite crash si service cassé)
-        if (!userService.findByEmail) {
-            console.error("❌ findByEmail manquant dans usersService");
-            return res.status(500).send("Service utilisateur non disponible");
-        }
-
         const user = await userService.findByEmail(email);
-
-        console.log("USER FOUND:", user);
 
         if (!user) {
             return res.status(401).send("Utilisateur introuvable");
-        }
-
-        if (!user.password) {
-            return res.status(500).send("Utilisateur sans mot de passe");
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -74,17 +70,17 @@ exports.login = async (req, res) => {
 
         req.session.user = {
             id: user._id,
+            username: user.username,
             email: user.email,
             role: user.role || 'user'
         };
 
-        console.log("LOGIN SUCCESS:", req.session.user);
-
         return res.redirect('/dashboard');
 
     } catch (error) {
-        console.error("🔥 LOGIN ERROR:", error);
-        return res.status(500).send("Erreur serveur login");
+        console.error("LOGIN ERROR:", error);
+
+        return res.status(500).send("Erreur lors de la connexion");
     }
 };
 
